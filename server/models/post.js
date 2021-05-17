@@ -12,12 +12,12 @@ const PostSchema = new Schema({
     },
     author: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: "User"
     },
     comments: [{
         type: Schema.Types.ObjectId,
-        ref: 'Comment'
+        ref: "Comment"
     }]
 })
 
-module.exports = mongoose.Schema('Post', PostSchema)
+module.exports = mongoose.model('Post', PostSchema)
