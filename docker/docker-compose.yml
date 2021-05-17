@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+    nginx:
+        image: nginx 
+    express-server:
+        build: .
+        image: dormhub-server
+        restart: unless-stopped
+        ports: 
+            - "3000:3000"
+        networks: 
+            - dormhub-app
+        depends_on: 
+            - mongo
+    mongo:
+        image: mongo
+        restart: unless-stopped
+        networks: 
+            - dormhub-app
+        volumes: 
+            - mongo-data:/data/db
+
+networks: 
+    dormhub-app:
+        driver: bridge
+
+volumes: 
+    mongo-data:
+        driver: local
