@@ -5,6 +5,9 @@ if(process.env.NODE_ENV !== "production") {
 const Express = require('express')
 const app = Express() 
 const mongoose = require('mongoose')
+var cors = require('cors')
+
+app.use(cors())
 
 const dbUrl = process.env.DB_URL || "mongodb://mongo:27017/dorm-hub"
 mongoose.connect(dbUrl, { 
@@ -20,7 +23,15 @@ mongoose.connect(dbUrl, {
     })
 
 
-const port =  3000;
+app.get('/',(req,res) => {
+    const data = [{
+        title: 'Test',
+        message: 'Erste message'
+    }]
+    res.send(JSON.stringify(data))
+})
+
+const port =  8081;
 app.listen(port, () => {
     console.log('Server running: ' + port)
 })
