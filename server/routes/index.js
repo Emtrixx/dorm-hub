@@ -1,7 +1,6 @@
 const express = require('express');
-const passport = require('passport');
-const jwt = require('jsonwebtoken');
 const router = express.Router();
+const auth = require('../utils/auth')
 
 router.get('/', (req, res) => {
     const data = [{
@@ -11,44 +10,29 @@ router.get('/', (req, res) => {
     res.send(JSON.stringify(data))
 })
 
-router.post('/signup', passport.authenticate('signup', { session: false }),
-    async (req, res) => {
-        res.json({
-            message: 'Signup successful',
-            user: req.user
-        })
-    })
+router.post('/test', (req,res) => {
+    console.log(req.body)
+    res.send('success')
+})
 
-router.post('/login', async (req, res, next) => {
-    passport.authenticate(
-        'login',
-        async (err, user, info) => {
-            try {
-                if (err || !user) {
-                    const error = new Error('An error occurred.');
-
-                    return next(error);
-                }
-
-                req.login(
-                    user,
-                    { session: false },
-                    async (error) => {
-                        if (error) return next(error);
-
-                        const body = { _id: user._id, email: user.email };
-                        //process.env.JWT_SECRET
-                        const token = jwt.sign({ user: body }, 'TOP_SECRET');
-
-                        return res.json({ token });
-                    }
-                );
-            } catch (error) {
-                return next(error);
-            }
-        }
-    )(req, res, next);
-}
-);
+router.post(
+    '/register',
+    // middleware that handles the registration process
+    auth.register,
+    // json handler
+    auth.signJWTForUser,
+    (req,res) => {
+        console.log(req.body)
+    }
+)
+  
+  // Sign in
+router.post(
+    '/login',
+    // handles the sign in process
+    auth.signIn,
+    // json handler
+    auth.signJWTForUser
+)
 
 module.exports = router;

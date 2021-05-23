@@ -7,18 +7,12 @@ const app = express()
 const mongoose = require('mongoose')
 const cors = require('cors')
 const passport = require('passport')
-const jwt = require('jsonwebtoken')
-const User = require('./models/user')
-const LocalStrategy = require('passport-local');
-require('./utils/auth')
+const auth = require('./utils/auth')
 
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-app.use(passport.initialize());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+
 
 const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/dorm-hub"
 mongoose.connect(dbUrl, {
@@ -39,7 +33,7 @@ const secureRoutes = require('./routes/secure');
 
 app.use('/', routes)
 
-app.use('/user', passport.authenticate('jwt', { session: false }), secureRoutes)
+app.use('/user', auth.requireJWT, secureRoutes)
 
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
