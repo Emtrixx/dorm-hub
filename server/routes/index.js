@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../utils/auth')
+const Hub = require('../models/hub')
 
 router.get('/', (req, res) => {
     const data = [{
@@ -8,6 +9,18 @@ router.get('/', (req, res) => {
         message: 'Erste message'
     }]
     res.send(JSON.stringify(data))
+})
+
+router.get('/blackboard/all',async (req,res) => {
+    const data = await Hub.find().populate('posts')
+    res.send(data)
+})
+
+router.get('/blackboard/:hub', async (req,res) => {
+    const {hub} = req.params;
+    console.log(hub)
+    const data = await Hub.findOne({name: hub}).populate('posts')
+    res.send(data)
 })
 
 router.post('/test', (req,res) => {

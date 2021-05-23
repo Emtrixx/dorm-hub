@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     async fetchData() {
-      await this.$store.dispatch("blackboard/fetchPosts");
+      await this.$store.dispatch("blackboard/fetchPosts", {hub: this.id});
     },
   },
 };

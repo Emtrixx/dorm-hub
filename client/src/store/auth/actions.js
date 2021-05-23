@@ -18,30 +18,30 @@ export default {
         const resData = await res.json()
 
         if(!res.ok) {
-            console.log(resData);
             const error = new Error(resData.message || 'Failed to authenticate!')
+            console.log(error.message);
             throw error        
         }
 
-
         // const expiresIn = +resData.expiresIn
-        const expiresIn = 10000
+        const expiresIn = 20000
         const expirationDate = Date.now() + expiresIn
 
-        localStorage.setItem('token', resData.idToken)
-        localStorage.setItem('userId', resData.localId)
+        localStorage.setItem('token', resData.token)
+        localStorage.setItem('userId', resData.userId)
         localStorage.setItem('tokenExpiration', expirationDate)
 
         timer = setTimeout(() => {
             context.dispatch('autoLogout')
         }, expiresIn)
 
-
         context.commit('setUser', {
             token: resData.token,
             userId: resData.userId,
         })
     },
+
+
     tryLogin(context) {
         const token = localStorage.getItem('token')
         const userId = localStorage.getItem('userId')
@@ -64,6 +64,8 @@ export default {
             })
         }
     },
+
+
     logout(context) {
         localStorage.removeItem('token')
         localStorage.removeItem('userId')
@@ -76,6 +78,8 @@ export default {
             userId: null,
         })
     },
+
+
     autoLogout(context) {
        context.dispatch('logout')
        context.commit('setAutoLogout')
