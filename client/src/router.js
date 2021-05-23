@@ -17,7 +17,9 @@ const router = createRouter({
             ]
         },
         { path: '/news', component: News },
-        { path: '/wiki', component: Wiki }
+        { path: '/wiki', component: Wiki },
+        { path: '/login', component: () => import('./pages/auth/Login.vue') },
+        { path: '/signup', component: () => import('./pages/auth/Signup.vue') }
     ]
 })
 

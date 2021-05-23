@@ -11,8 +11,10 @@ import TheNavbar from './components/UI/TheNavbar.vue'
 export default {
   components: {
     TheNavbar
-  }
-
+  },
+  created() {
+      this.$store.dispatch('tryLogin')
+    },
 }
 </script>
 

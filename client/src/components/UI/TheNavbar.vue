@@ -15,13 +15,29 @@
 
 
         <div class="text-end">
-          <button type="button" class="btn btn-outline-light me-2">Login</button>
-          <button type="button" class="btn btn-warning">Sign-up</button>
+          <router-link to="/login"><button type="button" class="btn btn-outline-light me-2">Login</button></router-link>
+          <router-link to="/signup"><button type="button" class="btn btn-warning">Sign-up</button></router-link>
+          <button type="button" class="btn btn btn-outline-light me-2" v-if="isAuthenticated" @click="logout">Logout</button>
         </div>
       </div>
     </div>
   </header>
 </template>
+
+<script>
+export default {
+  computed: {
+    isAuthenticated() {
+      return this.$store.getters['isAuthenticated']
+    }
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout');
+    }
+  }
+}
+</script>
 
 <style scoped>
 
