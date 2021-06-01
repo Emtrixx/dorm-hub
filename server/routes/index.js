@@ -19,9 +19,21 @@ router.get('/blackboard/all',async (req,res) => {
 
 router.get('/blackboard/:hub', async (req,res) => {
     const {hub} = req.params;
-    console.log(hub)
     const data = await Hub.findOne({name: hub}).populate('posts')
     res.send(data)
+})
+
+//TODO: Put in protected routes
+router.post('/blackboard/:hub', async (req,res) => {
+    const {hub} = req.params;
+    console.log(req.body)
+    const newPost = new Post(req.body)
+    const result = await newPost.save()
+    const selectedHub = await Hub.findOne({name: hub}) 
+    selectedHub.posts.push(newPost)
+    await selectedHub.save()
+    console.log(result)
+    res.send(result)
 })
 
 router.post('/test', (req,res) => {

@@ -18,12 +18,15 @@ mongoose.connect(dbUrl, {
     })
 
 const seedDb = async () => {
+    // await User.deleteMany({})
     // const admin = new User({
     //     _id: "60a2b8c22c6ab1289ce17436",
     //     email: 'admin@admin.com',
     //     username: 'admin',
     //     password: '123'
     // })
+
+    //Instead of seeding first user you can just register on the site first before seeding the rest
     const user = await User.findOne({});
 
     //DELETE OLD
