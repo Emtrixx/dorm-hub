@@ -1,5 +1,5 @@
 export default {
     fetchPosts(state,payload) {
-        state.posts = payload.post;
+        state.hub = payload.hub;
     }
 }

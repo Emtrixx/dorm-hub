@@ -12,4 +12,10 @@ router.get(
   }
 );
 
+router.post('/blackboard/:hub', async (req, res) => {
+  const {post} = new Post(req.body.post)
+  const data = await post.save()
+  res.send(data)
+})
+
 module.exports = router;

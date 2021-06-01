@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../utils/auth')
 const Hub = require('../models/hub')
+const Post = require('../models/post')
 
 router.get('/', (req, res) => {
     const data = [{

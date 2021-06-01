@@ -1,8 +1,10 @@
 <template>
+    <h3>{{ id }}</h3>
   <div>
-    <h3>Test</h3>
-    <p>{{ id }}</p>
-    <p>{{ posts[0].title }}</p>
+    <base-card v-for="post in posts.posts" :key="post.id">
+    <h4>{{ post.title }}</h4>
+    <p>{{ post.text }}</p>
+    </base-card>
   </div>
 </template>
 
