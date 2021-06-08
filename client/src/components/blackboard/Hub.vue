@@ -3,21 +3,18 @@
     <button class="btn btn-info" @click="fetchData">Refresh</button>
     <button class="btn btn-success" @click="toggleForm">Create Post</button>
     <post-form v-if="showForm" @save-data="createPost"></post-form>
-  <div>
-    <base-card v-for="post in posts" :key="post.id">
-    <h4>{{ post.title }}</h4>
-    <p>{{ post.text }}</p>
-    </base-card>
-  </div>
+  <post-item v-for="post in posts" :key="post._id" :id="post._id" :title="post.title" :text="post.text">
+  </post-item>
 </template>
 
 <script>
 import PostForm from './PostForm'
-
+import PostItem from './PostItem'
 export default {
   props: ["id"],
   components: {
-    PostForm
+    PostForm,
+    PostItem
   },
   data() {
     return {

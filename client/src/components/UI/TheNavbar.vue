@@ -11,6 +11,7 @@
           <li><router-link to="/news" class="nav-link px-2 text-white">News</router-link></li>
           <li><router-link to="/blackboard/foodsharing" class="nav-link px-2 text-white">Blackboard</router-link></li>
           <li><router-link to="/wiki" class="nav-link px-2 text-white">Wiki</router-link></li>
+          <li><router-link to="/meet" class="nav-link px-2 text-white">Meet</router-link></li>
         </ul>
 
         <div class="text-end">

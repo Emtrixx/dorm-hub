@@ -6,7 +6,8 @@ export default {
     namespaced: true,
     state() {
         return {
-            hub:{} 
+            hub:{},
+            post:{} 
         }
     },
     mutations,

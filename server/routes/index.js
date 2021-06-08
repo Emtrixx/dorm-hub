@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../utils/auth')
 const Hub = require('../models/hub')
 const Post = require('../models/post')
+const Comment = require('../models/comment')
 
 router.get('/', (req, res) => {
     const data = [{
@@ -33,6 +34,18 @@ router.post('/blackboard/:hub', async (req,res) => {
     selectedHub.posts.push(newPost)
     await selectedHub.save()
     console.log(result)
+    res.send(result)
+})
+
+router.get('/blackboard/:hub/:postId', async (req,res) => {
+    const { postId } = req.params;
+    const post = await Post.findById(postId).populate('author').populate('comments')
+    res.send(post)
+})
+
+router.delete('/blackboard/:hub/:postId', async (req,res) => {
+    const { postId } = req.params;
+    // await 
     res.send(result)
 })
 
