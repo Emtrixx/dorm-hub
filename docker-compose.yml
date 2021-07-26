@@ -33,7 +33,7 @@ services:
             - mongo
 
     mongo:
-        image: mongo
+        image: mongo:4.4.7-focal
         restart: unless-stopped
         networks: 
             - dormhub-app
