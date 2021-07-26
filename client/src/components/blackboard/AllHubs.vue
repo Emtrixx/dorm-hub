@@ -33,7 +33,8 @@ export default {
   },
   methods: {
     async fetchData() {
-        const res = await fetch(`http://localhost:8081/blackboard/allPosts`)
+        console.log(process.env.VUE_APP_HOST + `blackboard/allPosts`)
+        const res = await fetch(process.env.VUE_APP_HOST + `blackboard/allPosts`)
         const resData = await res.json()
 
         if(!res.ok) {

@@ -48,7 +48,7 @@ export default {
                 postId: this.postId,
                 data,
             };
-            const res = await fetch('http://localhost:8081/blackboard/'+payload.hubId+'/'+payload.postId, {
+            const res = await fetch(process.env.VUE_APP_HOST + 'blackboard/'+payload.hubId+'/'+payload.postId, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': "Bearer " + localStorage.getItem('token')
