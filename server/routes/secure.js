@@ -21,7 +21,7 @@ router.post('/blackboard/:hub/:postId', async (req, res) => {
   const { postId } = req.params
   const post = await Post.findById(postId)
   const comment = new Comment(req.body)
-  post.comments.push(comment)
+  post.comments.unshift(comment)
   await post.save()
   console.log(comment)
   const data = await comment.save()
@@ -37,7 +37,7 @@ router.post('/blackboard/:hub', async (req,res) => {
   const selectedHub = await Hub.findOne({name: hub})
   newPost.hub = selectedHub 
   const result = await newPost.save()
-  selectedHub.posts.push(newPost)
+  selectedHub.posts.unshift(newPost)
   await selectedHub.save()
   console.log(result)
   res.send(result)

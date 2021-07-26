@@ -6,8 +6,8 @@ services:
         build: 
             context: ./client
             dockerfile: Dockerfile
-        volumes: 
-            - ../client:/app
+        # volumes: 
+        #     - ./client:/app
         ports: 
             - 127.0.0.1:8082:80
         networks: 
@@ -21,8 +21,8 @@ services:
             context: ./server
             dockerfile: Dockerfile
         restart: unless-stopped
-        volumes: 
-            - ./server:/usr/src/app
+        # volumes: 
+        #     - ./server:/usr/src/app
         ports: 
             - "127.0.0.1:8081:8081"
         environment: 
@@ -39,6 +39,18 @@ services:
             - dormhub-app
         volumes: 
             - mongo-data:/data/db
+
+    seeds:
+        image: dormhub-seeds
+        build: 
+            context: ./server
+            dockerfile: DockerfileSeeds
+        environment: 
+            - DB_URL=mongodb://mongo:27017/dorm-hub
+        networks: 
+            - dormhub-app
+        depends_on: 
+            - mongo
 
 networks: 
     dormhub-app:

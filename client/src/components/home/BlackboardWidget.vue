@@ -4,6 +4,9 @@
     <div v-if="loading">
         Loading
     </div>
+    <div v-else-if="notFound">
+        Not Found
+    </div>
     <div v-else>
     from <router-link :to="hubLink">{{post.hub.name}}</router-link>
     <post-item 
@@ -23,6 +26,7 @@ export default {
     data() {
         return {
             loading: true,
+            notFound: false,
             post: {}
         }
     },
@@ -33,15 +37,19 @@ export default {
         async fetchLatestPost() {
             const res = await fetch(`http://localhost:8081/blackboard/latestPost`)
             const resData = await res.json()
-
-        if(!res.ok) {
-            const error = new Error(resData.message || 'Failed to fetch post!')
-            console.log(error.message);
-            throw error        
-        }
-        this.post = resData
-        console.log(this.post)
-        this.loading = false
+            console.log(res)
+        
+            if(!res.ok) {
+                const error = new Error(resData.message || 'Failed to fetch post!')
+                console.log(error.message);
+                this.loading = false
+                this.notFound = true        
+                // throw error
+            }
+            
+            this.post = resData
+            console.log(this.post)
+            this.loading = false
         }
     },
     computed: {

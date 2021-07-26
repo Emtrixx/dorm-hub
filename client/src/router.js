@@ -14,6 +14,8 @@ import Wiki from './pages/Wiki.vue'
 
 import Meet from './pages/Meet.vue'
 
+import Calendar from './pages/Calendar.vue'
+
 const router = createRouter({
     history: createWebHistory(),
     routes: [
@@ -30,6 +32,7 @@ const router = createRouter({
         { path: '/news', component: News },
         { path: '/wiki', component: Wiki },
         { path: '/meet', component: Meet },
+        { path: '/calendar', component: Calendar },
         { path: '/login', component: () => import('./pages/auth/Login.vue') },
         { path: '/signup', component: () => import('./pages/auth/Signup.vue') }
     ]

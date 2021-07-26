@@ -25,7 +25,7 @@ export default {
   data() {
       return {
           loading: true,
-          posts: {}
+          posts: []
       }
   },
   created() {
@@ -42,6 +42,7 @@ export default {
             throw error        
         }
 
+        console.log(resData)
         this.posts = resData
     }
   },

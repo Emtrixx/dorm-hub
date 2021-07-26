@@ -16,27 +16,30 @@ router.get('/', (req, res) => {
 //Get all Hubs
 router.get('/blackboard/all',async (req,res) => {
     const data = await Hub.find().populate('posts')
-    res.send(data)
+    res.send(JSON.stringify(data))
 })
 
 //Get all Posts
 router.get('/blackboard/allPosts', async(req, res) => {
     const posts = await Post.find().populate('hub').populate('author')
-    res.send(posts)
+    res.send(JSON.stringify(posts.reverse()))
 })
 
 //Get latest post
 router.get('/blackboard/latestPost', async(req,res) => {
     const post = await Post.find({}).sort({_id: -1}).limit(1).populate('author').populate('hub')
-    console.log(post)
-    res.send(post[0])
+    if (!post.length>0) {
+        post[0] = {}
+        res.status(404)
+    }
+    res.send(JSON.stringify(post[0]))
 })
 
 //Get Hub
 router.get('/blackboard/:hub', async (req,res) => {
     const {hub} = req.params;
     const data = await Hub.findOne({name: hub}).populate('posts')
-    res.send(data)
+    res.send(JSON.stringify(data))
 })
 
 
@@ -47,7 +50,7 @@ router.get('/blackboard/:hub', async (req,res) => {
 router.get('/blackboard/:hub/:postId', async (req,res) => {
     const { postId } = req.params;
     const post = await Post.findById(postId).populate('author').populate({path: 'comments', populate: { path: 'author'}})
-    res.send(post)
+    res.send(JSON.stringify(post))
 })
 
 

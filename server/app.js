@@ -37,7 +37,6 @@ const routes = require('./routes/index')
 const secureRoutes = require('./routes/secure');
 
 app.use('/', routes)
-
 //auth middleware before routing
 app.use('/', auth.requireJWT, secureRoutes)
 

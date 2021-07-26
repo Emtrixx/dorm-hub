@@ -36,6 +36,9 @@ export default {
   created() {
     this.fetchData();
   },
+  updated() {
+    this.fetchData();
+  },
   methods: {
     async fetchData() {
       await this.$store.dispatch("blackboard/fetchHub", { hub: this.id });
@@ -48,6 +51,7 @@ export default {
         hub: this.id,
         data,
       });
+      this.fetchData()
     },
   },
 };

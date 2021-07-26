@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>{{ id }}</h3>
+    <h3>{{ id.toUpperCase() }}</h3>
     <router-view></router-view>
   </div>
 </template>
