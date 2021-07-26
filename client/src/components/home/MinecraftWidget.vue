@@ -1,0 +1,62 @@
+<template>
+<base-card class="row justify-content-center">
+  <div class="col-md-8 text-center">
+    <h3>Minecraft Server Status</h3>
+    <div class="header">
+      <div class="image">
+        <img class="img-fluid"  src="https://images-eu.ssl-images-amazon.com/images/I/418cEZfh8-L.jpg" alt="minecraft image" />
+      </div>
+      <h2>dorm-hub.de</h2>
+    </div>
+    <div v-if="loading">
+        <p>Loading ...</p>
+    </div>
+    <div v-else>
+        <p>
+            Players Online: {{data.players.online}}/{{data.players.max}}
+        </p>
+        <p>
+            Version: {{data.version.name}}
+        </p>
+    </div>
+  </div>
+</base-card>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      loading: true,
+      data: {}
+    };
+  },
+  created() {
+      this.fetchData()
+  },
+  methods: {
+    async fetchData() {
+      var url = "https://api.minetools.eu/ping/dorm-hub.de/25565";
+      const res = await fetch(url);
+      const resData = await res.json();
+
+      if (!res.ok) {
+        const error = new Error(resData.message || "Failed to fetch post!");
+        console.log(error.message);
+        throw error;
+      }
+     
+      console.log(resData)
+      this.data = resData
+      this.loading = false
+    },
+  },
+};
+</script>
+
+
+<style scoped>
+img {
+    height: 200px;
+}
+</style>

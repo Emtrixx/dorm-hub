@@ -27,7 +27,8 @@ export default {
     async createPost(context, payload) {
         const res = await fetch('http://localhost:8081/blackboard/'+payload.hub, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + localStorage.getItem('token')
             },
             method: 'POST',
             body: JSON.stringify(payload.data)
@@ -42,5 +43,5 @@ export default {
         }
 
         context.commit('createPost', resData)
-    }
+    },
 }

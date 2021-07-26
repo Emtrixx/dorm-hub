@@ -3,7 +3,6 @@ export default {
         return state.hub;
     },
     getPosts(state) {
-        console.log(state.hub.posts)
         return state.hub.posts;
     },
     getPost(state) {

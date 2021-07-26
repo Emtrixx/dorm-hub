@@ -23,8 +23,8 @@ export default {
             throw error        
         }
 
-        // const expiresIn = +resData.expiresIn
-        const expiresIn = 20000
+        const expiresIn = +resData.expiresIn
+        // const expiresIn = 20000
         const expirationDate = Date.now() + expiresIn
 
         localStorage.setItem('token', resData.token)

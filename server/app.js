@@ -9,11 +9,14 @@ const cors = require('cors')
 const passport = require('passport')
 const auth = require('./utils/auth')
 
+//enables cross origin resources
 app.use(cors())
+//makes json and urlencoded response data usable
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 
+//mongoose connects to mongoDB
 const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/dorm-hub"
 mongoose.connect(dbUrl, {
     useNewUrlParser: true,
@@ -28,18 +31,23 @@ mongoose.connect(dbUrl, {
     })
 
 
+//unsecured routes
 const routes = require('./routes/index')
+//secured routes(for logged in users)
 const secureRoutes = require('./routes/secure');
 
 app.use('/', routes)
 
-app.use('/user', auth.requireJWT, secureRoutes)
+//auth middleware before routing
+app.use('/', auth.requireJWT, secureRoutes)
 
+//error handler. Sends error as json
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.json({ error: err });
 });
 
+//Server start on port xxxx
 const port = 8081;
 app.listen(port, () => {
     console.log('Server running: ' + port)

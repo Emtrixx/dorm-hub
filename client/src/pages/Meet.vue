@@ -5,6 +5,7 @@
       <button class="btn btn-primary" :class="channel==='all' ? 'active' : ''" @click="switchChannel('all')">All</button>
       <button class="btn btn-primary" :class="channel==='heimrat' ? 'active' : ''" @click="switchChannel('heimrat')">Heimrat</button>
     </div>
+    <a href="https://meet.dorm-hub.de/" class="btn btn-info" target="#">Open in new tab</a>
     <div class="player">
       <iframe
         allow="camera; microphone; fullscreen; display-capture; autoplay"

@@ -14,13 +14,14 @@ const PostSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
+    hub: {
+        type: Schema.Types.ObjectId,
+        ref: "Hub"
+    },
     comments: [{
         type: Schema.Types.ObjectId,
         ref: "Comment"
-    }],
-    date: {
-        type: Date,
-    }
-})
+    }]
+},{ timestamps: true })
 
 module.exports = mongoose.model('Post', PostSchema)

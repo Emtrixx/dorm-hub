@@ -2,6 +2,7 @@
     <router-link :to="postLink">
     <base-card>
     <h4>{{ title }}</h4>
+    <p><i>hub/{{id}}</i></p>
     <p>{{ text }}</p>
     </base-card>
     </router-link>
@@ -9,11 +10,19 @@
 
 <script>
 export default {
-    props: ['id', 'title', 'text'],
+    props: ['id', 'postId', 'title', 'text'],
     computed: {
         postLink() {
-            return this.$route.path + '/' + this.id;
+            return '/blackboard/'+this.id+'/'+this.postId;
         }
 }
 }
 </script>
+
+<style scoped>
+a {
+    text-decoration: none;
+    color: black;
+    padding: 0;
+}
+</style>

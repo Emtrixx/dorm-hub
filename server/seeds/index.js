@@ -47,11 +47,13 @@ const seedDb = async () => {
         title: 'Test',
         text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
         author: user.id,
-        comments: ["60a2bbb836a8142d7848819e"]
+        comments: ["60a2bbb836a8142d7848819e"],
+        hub: "60fdecbe15bb274108b4ef9b"
     })
     await post.save()
 
     const foodsharing = new Hub({
+        _id: "60fdecbe15bb274108b4ef9b",
         name: 'foodsharing',
         admins: [user.id],
         members: [user.id],

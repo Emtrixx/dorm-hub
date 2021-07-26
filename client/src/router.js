@@ -4,6 +4,8 @@ import Home from './pages/Home.vue'
 
 import Blackboard from './pages/Blackboard'
 import Hub from './components/blackboard/Hub.vue'
+import AllHubs from './components/blackboard/AllHubs.vue'
+import ShowAll from './components/blackboard/ShowAll.vue'
 import ShowPost from './components/blackboard/ShowPost.vue'
 
 import News from './pages/News.vue'
@@ -18,8 +20,11 @@ const router = createRouter({
         { path: '/', component: Home },
         {
             path: '/blackboard', component: Blackboard, children: [
-                { path: ':id', component: Hub, props: true },
-                { path: ':id/:postId', component: ShowPost, props: true }
+                { path: 'all', component: AllHubs},
+                { path: ':id', component: Hub, props: true, children: [
+                    { path: 'index', component: ShowAll, props: true }, 
+                    { path: ':postId', component: ShowPost, props: true},
+                ]}
             ]
         },
         { path: '/news', component: News },

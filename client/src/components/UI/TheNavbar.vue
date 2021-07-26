@@ -9,7 +9,7 @@
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <li><router-link to="/" class="nav-link px-2 text-white">Home</router-link></li>
           <li><router-link to="/news" class="nav-link px-2 text-white">News</router-link></li>
-          <li><router-link to="/blackboard/foodsharing" class="nav-link px-2 text-white">Blackboard</router-link></li>
+          <li><router-link to="/blackboard/all" class="nav-link px-2 text-white">Blackboard</router-link></li>
           <li><router-link to="/wiki" class="nav-link px-2 text-white">Wiki</router-link></li>
           <li><router-link to="/meet" class="nav-link px-2 text-white">Meet</router-link></li>
         </ul>
