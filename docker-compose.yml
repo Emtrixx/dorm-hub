@@ -10,6 +10,8 @@ services:
         #     - ./client:/app
         ports: 
             - 127.0.0.1:8082:80
+        environment: 
+            - VUE_APP_HOST=http://dorm-hub.de:8081/ 
         networks: 
             - dormhub-app
         depends_on: 
@@ -24,7 +26,7 @@ services:
         # volumes: 
         #     - ./server:/usr/src/app
         ports: 
-            - "127.0.0.1:8081:8081"
+            - "8081:8081"
         environment: 
             - DB_URL=mongodb://mongo:27017/dorm-hub
         networks: 
