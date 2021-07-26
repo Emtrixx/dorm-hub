@@ -35,7 +35,6 @@ export default {
         }
     },
     created() {
-        console.log('blackboard/fetchPost', {hubId: this.id, postId: this.postId})
         this.fetchPost()
     },
     methods: {
@@ -49,7 +48,6 @@ export default {
                 postId: this.postId,
                 data,
             };
-            console.log(payload)
             const res = await fetch('http://localhost:8081/blackboard/'+payload.hubId+'/'+payload.postId, {
                 headers: {
                     'Content-Type': 'application/json',

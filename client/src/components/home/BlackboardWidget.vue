@@ -48,7 +48,6 @@ export default {
             }
             
             this.post = resData
-            console.log(this.post)
             this.loading = false
         }
     },

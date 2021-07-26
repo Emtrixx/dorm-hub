@@ -23,7 +23,6 @@ router.post('/blackboard/:hub/:postId', async (req, res) => {
   const comment = new Comment(req.body)
   post.comments.unshift(comment)
   await post.save()
-  console.log(comment)
   const data = await comment.save()
   res.send(data)
 })
