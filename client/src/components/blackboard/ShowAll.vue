@@ -1,7 +1,7 @@
 <template>
   <div>
     <button class="btn btn-info" @click="fetchData">Refresh</button>
-    <button class="btn btn-success" @click="toggleForm">Create Post</button>
+    <button class="btn btn-success" @click="toggleForm" v-if="isAuthenticated">Create Post</button>
     <post-form v-if="showForm" @save-data="createPost"></post-form>
     <post-item
       v-for="post in posts"
@@ -44,6 +44,9 @@ export default {
     id() {
       return this.$route.params.id;
     },
+    isAuthenticated() {
+      return this.$store.getters['isAuthenticated']
+    }
   },
   created() {
     this.fetchData();
