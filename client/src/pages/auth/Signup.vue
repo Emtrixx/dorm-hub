@@ -29,6 +29,9 @@
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
+<div v-if="error" class="alert alert-danger mt-3" role="alert">
+  {{error}}
+</div>
 </base-card>
 </template>
 
@@ -39,19 +42,27 @@ export default {
             firstName: '',
             lastName: '',
             email: '',
-            password: ''
+            password: '',
+            error: ''
         }
     },
     methods: {
-        sendForm(){
+        async sendForm(){
           const user = {
             firstName: this.firstName,
             lastName: this.lastName,
             email: this.email,
             password: this.password
           }
+          try {
+            await this.$store.dispatch('signup', user)
+            this.$router.replace('/')
+          } catch (error) {
+            this.password = ''
+            this.error = 'Failed to authenticate!'
+            console.log(error)
+          }
 
-          this.$store.dispatch('signup', user)
         }
     }
 }
