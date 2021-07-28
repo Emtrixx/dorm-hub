@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h3>All Hubs</h3>
+  <div class="">
+    <h3 class="text-center">All Hubs</h3>
     <p v-if="loading">Loading</p>
     <div v-else>
       <button class="btn btn-info" @click="fetchData">Refresh</button>

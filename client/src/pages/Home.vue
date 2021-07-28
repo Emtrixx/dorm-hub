@@ -1,14 +1,14 @@
 <template>
 <div class="row justify-content-center">
 
-    <news-widget class="col-md-8"></news-widget>
+    <news-widget class="col-md-10"></news-widget>
 
 
-    <blackboard-widget class="col-md-8"></blackboard-widget>
+    <blackboard-widget class="col-md-10"></blackboard-widget>
 
-    <wiki-widget class="col-md-8"></wiki-widget>
+    <wiki-widget class="col-md-10"></wiki-widget>
 
-    <minecraft-widget class="col-md-8"></minecraft-widget>
+    <minecraft-widget class="col-md-10"></minecraft-widget>
 </div>
 </template>
 

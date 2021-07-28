@@ -1,7 +1,7 @@
 <template>
-<div>
+<div class="">
   <p v-if="loading">loading...</p>
-  <div v-else>
+  <div class="" v-else>
     <button class="btn btn-info" @click="fetchData">Refresh</button>
     <button class="btn btn-success" @click="toggleForm" v-if="isAuthenticated">Create Post</button>
     <post-form v-if="showForm" @save-data="createPost"></post-form>
