@@ -1,7 +1,8 @@
 <template>
   <div>
     <h3>All Hubs</h3>
-    <div>
+    <p v-if="loading">Loading</p>
+    <div v-else>
       <button class="btn btn-info" @click="fetchData">Refresh</button>
       <post-item
         v-for="post in posts"
@@ -33,7 +34,6 @@ export default {
   },
   methods: {
     async fetchData() {
-        console.log(process.env.VUE_APP_HOST + `blackboard/allPosts`)
         const res = await fetch(process.env.VUE_APP_HOST + `blackboard/allPosts`)
         const resData = await res.json()
 
@@ -43,8 +43,8 @@ export default {
             throw error        
         }
 
-        console.log(resData)
         this.posts = resData
+        this.loading = false
     }
   },
 };

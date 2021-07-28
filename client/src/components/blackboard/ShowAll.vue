@@ -1,5 +1,7 @@
 <template>
-  <div>
+<div>
+  <p v-if="loading">loading...</p>
+  <div v-else>
     <button class="btn btn-info" @click="fetchData">Refresh</button>
     <button class="btn btn-success" @click="toggleForm" v-if="isAuthenticated">Create Post</button>
     <post-form v-if="showForm" @save-data="createPost"></post-form>
@@ -11,6 +13,7 @@
       :title="post.title"
       :text="post.text"
     ></post-item>
+</div>
   </div>
 </template>
 
@@ -25,6 +28,7 @@ export default {
   data() {
     return {
       showForm: false,
+      loading: true
     };
   },
   watch: {
@@ -48,12 +52,18 @@ export default {
       return this.$store.getters['isAuthenticated']
     }
   },
-  created() {
+  mounted() {
     this.fetchData();
   },
   methods: {
     async fetchData() {
-      await this.$store.dispatch("blackboard/fetchHub", { hub: this.id });
+      try {
+        await this.$store.dispatch("blackboard/fetchHub", { hub: this.id });
+        this.loading = false
+      } catch (error) {
+        console.log(error)
+      }
+
     },
     toggleForm() {
       this.showForm = !this.showForm;
