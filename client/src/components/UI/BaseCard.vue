@@ -5,11 +5,19 @@
 </template>
 
 <style scoped>
-div {
+/* div {
     box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     padding: 1rem;
     max-width: 70%;
     margin: 2rem auto;
+} */
+
+div {
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 1rem;
+    max-width: 90%;
+    margin: 1.5rem 1rem;
 }
 </style>

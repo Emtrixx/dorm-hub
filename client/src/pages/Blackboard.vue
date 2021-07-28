@@ -10,7 +10,7 @@
         </div>
     </div>
     <hr>
-    <router-view></router-view>
+    <router-view class=""></router-view>
 </div>
 </template>
 

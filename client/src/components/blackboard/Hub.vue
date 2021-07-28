@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h3>{{ id.toUpperCase() }}</h3>
-    <router-view></router-view>
+    <h3 class="text-center">{{ id.toUpperCase() }}</h3>
+    <router-view class=""></router-view>
   </div>
 </template>
 
