@@ -16,6 +16,10 @@ import Meet from './pages/Meet.vue'
 
 import Calendar from './pages/Calendar.vue'
 
+import Impressum from './pages/Impressum.vue'
+import Privacy from './pages/Privacy.vue'
+import NotFound from './pages/NotFound.vue'
+
 const router = createRouter({
     history: createWebHistory(),
     routes: [
@@ -34,7 +38,11 @@ const router = createRouter({
         { path: '/meet', component: Meet },
         { path: '/calendar', component: Calendar },
         { path: '/login', component: () => import('./pages/auth/Login.vue') },
-        { path: '/signup', component: () => import('./pages/auth/Signup.vue') }
+        { path: '/signup', component: () => import('./pages/auth/Signup.vue') },
+        { path: '/impressum', component: Impressum },
+        { path: '/privacy', component: Privacy },
+        { path: '/:notFound(.*)', component: NotFound }
+
     ]
 })
 
