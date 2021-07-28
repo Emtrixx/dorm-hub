@@ -35,7 +35,7 @@ export default {
     },
     methods: {
         async fetchLatestPost() {
-            const res = await fetch(`http://localhost:8081/blackboard/latestPost`)
+            const res = await fetch(process.env.VUE_APP_HOST + 'blackboard/latestPost')
             const resData = await res.json()
             console.log(res)
         

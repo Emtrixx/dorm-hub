@@ -1,6 +1,6 @@
 export default {
     async fetchHub(context, payload) {
-        const res = await fetch('http://localhost:8081/blackboard/'+payload.hub)
+        const res = await fetch(process.env.VUE_APP_HOST + 'blackboard/'+payload.hub)
         const resData = await res.json();
 
         if(!res.ok) {
@@ -12,7 +12,7 @@ export default {
         context.commit('fetchHub', {hub: resData})
     },
     async fetchPost(context,payload) {
-        const res = await fetch(`http://localhost:8081/blackboard/${payload.hub}/${payload.postId}`)
+        const res = await fetch(process.env.VUE_APP_HOST + `blackboard/${payload.hub}/${payload.postId}`)
         const resData = await res.json()
 
         if(!res.ok) {
@@ -25,7 +25,7 @@ export default {
         context.commit('fetchPost', {post: resData})
     },
     async createPost(context, payload) {
-        const res = await fetch('http://localhost:8081/blackboard/'+payload.hub, {
+        const res = await fetch(process.env.VUE_APP_HOST + 'blackboard/'+payload.hub, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': "Bearer " + localStorage.getItem('token')
