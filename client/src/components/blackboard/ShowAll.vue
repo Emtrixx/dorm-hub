@@ -1,24 +1,23 @@
 <template>
-    <div>
-      <button class="btn btn-info" @click="fetchData">Refresh</button>
-      <button class="btn btn-success" @click="toggleForm">Create Post</button>
-      <post-form v-if="showForm" @save-data="createPost"></post-form>
-      <post-item
-        v-for="post in posts"
-        :key="post._id"
-        :id ="id"
-        :postId="post._id"
-        :title="post.title"
-        :text="post.text"
-      ></post-item>
-    </div>
+  <div>
+    <button class="btn btn-info" @click="fetchData">Refresh</button>
+    <button class="btn btn-success" @click="toggleForm">Create Post</button>
+    <post-form v-if="showForm" @save-data="createPost"></post-form>
+    <post-item
+      v-for="post in posts"
+      :key="post._id"
+      :id="id"
+      :postId="post._id"
+      :title="post.title"
+      :text="post.text"
+    ></post-item>
+  </div>
 </template>
 
 <script>
 import PostForm from "./PostForm";
 import PostItem from "./PostItem";
 export default {
-  props: ["id"],
   components: {
     PostForm,
     PostItem,
@@ -28,15 +27,25 @@ export default {
       showForm: false,
     };
   },
+  watch: {
+    id: function() {
+      this.fetchData();
+    },
+  },
   computed: {
     posts() {
       return this.$store.getters["blackboard/getPosts"];
     },
+    hubId() {
+      this.fetchData();
+      this.$router.params;
+      return this.id;
+    },
+    id() {
+      return this.$route.params.id;
+    },
   },
   created() {
-    this.fetchData();
-  },
-  updated() {
     this.fetchData();
   },
   methods: {
@@ -51,7 +60,7 @@ export default {
         hub: this.id,
         data,
       });
-      this.fetchData()
+      this.fetchData();
     },
   },
 };
