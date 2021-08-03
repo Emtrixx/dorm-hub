@@ -45,10 +45,15 @@ export default {
         console.log(error.message);
         throw error;
       }
-     
-      console.log(resData)
+      console.log('fetching minecraft data')
       this.data = resData
       this.loading = false
+
+      await new Promise(resolve => {
+        setTimeout(resolve, 10000)
+      })
+
+      this.fetchData()
     },
   },
 };

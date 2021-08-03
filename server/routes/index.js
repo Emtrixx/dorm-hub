@@ -5,6 +5,10 @@ const Hub = require('../models/hub')
 const Post = require('../models/post')
 const Comment = require('../models/comment')
 
+
+//TODO: Put some in protected routes
+
+//Test Route
 router.get('/', (req, res) => {
     const data = [{
         title: 'Test',
@@ -42,23 +46,11 @@ router.get('/blackboard/:hub', async (req,res) => {
     res.send(JSON.stringify(data))
 })
 
-
-//TODO: Put in protected routes
-
-
 //Get Post
 router.get('/blackboard/:hub/:postId', async (req,res) => {
     const { postId } = req.params;
     const post = await Post.findById(postId).populate('author').populate({path: 'comments', populate: { path: 'author'}})
     res.send(JSON.stringify(post))
-})
-
-
-//Delete Post
-router.delete('/blackboard/:hub/:postId', async (req,res) => {
-    const { postId } = req.params;
-    // await 
-    res.send(result)
 })
 
 

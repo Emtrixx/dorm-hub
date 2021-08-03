@@ -52,6 +52,7 @@ export default {
           author: this.$store.getters.userId,
         };
       }
+
       this.$emit("save-data", formData);
     },
   },

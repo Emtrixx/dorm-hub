@@ -1,19 +1,19 @@
 <template>
-    <router-link :to="postLink">
-    <base-card>
+    
+    <base-card @click="postLink" class="card">
     <h4>{{ title }}</h4>
     <p><i>hub/{{id}}</i></p>
     <p>{{ text }}</p>
     </base-card>
-    </router-link>
+    
 </template>
 
 <script>
 export default {
     props: ['id', 'postId', 'title', 'text'],
-    computed: {
+    methods: {
         postLink() {
-            return '/blackboard/'+this.id+'/'+this.postId;
+            this.$router.push('/blackboard/'+this.id+'/'+this.postId);
         }
 }
 }
@@ -24,5 +24,11 @@ a {
     text-decoration: none;
     color: black;
     padding: 0;
+}
+
+.card:hover {
+    cursor: pointer;
+    transform: scale(1.01);
+    transition: 200ms all ease;
 }
 </style>

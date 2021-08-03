@@ -43,5 +43,12 @@ router.post('/blackboard/:hub', async (req,res) => {
 })
 
 
+//Delete Post TODO: NOT FINISHED
+router.delete('/blackboard/:hub/:postId', async (req,res) => {
+  const { postId } = req.params;
+  // await 
+  res.send(result)
+})
+
 
 module.exports = router;

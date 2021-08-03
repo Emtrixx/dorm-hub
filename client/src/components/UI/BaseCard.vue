@@ -18,6 +18,6 @@ div {
     border-radius: 10px;
     padding: 1rem;
     max-width: 90%;
-    margin: 1.5rem 1rem;
+    margin: 1.5rem auto;
 }
 </style>
