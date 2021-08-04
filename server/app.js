@@ -32,13 +32,23 @@ mongoose.connect(dbUrl, {
 
 
 //unsecured routes
-const routes = require('./routes/index')
+const routes = require('./routes/blackboard/index')
 //secured routes(for logged in users)
-const secureRoutes = require('./routes/secure');
+const secureRoutes = require('./routes/blackboard/secure');
 
+const newsRoutes = require('./routes/news/index')
+const newsSecureRoutes = require('./routes/news/secure');
+
+//News Routes
+app.use('/news', newsRoutes)
+//Blackboard and general routes
 app.use('/', routes)
+
 //auth middleware before routing
+app.use('/news', auth.requireJWT, newsSecureRoutes)
 app.use('/', auth.requireJWT, secureRoutes)
+
+
 
 //error handler. Sends error as json
 app.use(function(err, req, res, next) {

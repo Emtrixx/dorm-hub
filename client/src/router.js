@@ -9,6 +9,7 @@ import ShowAll from './components/blackboard/ShowAll.vue'
 import ShowPost from './components/blackboard/ShowPost.vue'
 
 import News from './pages/News.vue'
+import ShowNews from './components/news/ShowNews.vue'
 
 import Wiki from './pages/Wiki.vue'
 
@@ -34,6 +35,7 @@ const router = createRouter({
             ]
         },
         { path: '/news', component: News },
+        { path: '/news/:newsId', component: ShowNews, props: true},
         { path: '/wiki', component: Wiki },
         { path: '/meet', component: Meet },
         { path: '/calendar', component: Calendar },

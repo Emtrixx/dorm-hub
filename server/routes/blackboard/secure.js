@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../utils/auth')
-const Hub = require('../models/hub')
-const Post = require('../models/post')
-const Comment = require('../models/comment')
+const auth = require('../../utils/auth')
+const Hub = require('../../models/hub')
+const Post = require('../../models/post')
+const Comment = require('../../models/comment')
 
 router.get(
   '/profile',

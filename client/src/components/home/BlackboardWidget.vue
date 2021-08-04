@@ -37,7 +37,6 @@ export default {
         async fetchLatestPost() {
             const res = await fetch(process.env.VUE_APP_HOST + 'blackboard/latestPost')
             const resData = await res.json()
-            console.log(res)
         
             if(!res.ok) {
                 const error = new Error(resData.message || 'Failed to fetch post!')
