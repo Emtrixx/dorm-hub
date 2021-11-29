@@ -73,6 +73,7 @@ export default {
         hub: this.id,
         data,
       });
+      this.toggleForm();
       this.fetchData();
     },
   },

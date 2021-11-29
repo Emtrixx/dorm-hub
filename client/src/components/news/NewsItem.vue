@@ -2,7 +2,7 @@
     
     <base-card @click="postLink" class="card">
     <h4>{{ title }}</h4>
-    <p><i>hub/{{id}}</i></p>
+    <p><strong>{{ `${author.firstName} ${author.lastName}` }}</strong></p>
     <p>{{ text }}</p>
     </base-card>
     
@@ -10,12 +10,13 @@
 
 <script>
 export default {
-    props: ['id', 'postId', 'title', 'text'],
+    props: ['newsId', 'title', 'text', 'author'],
     methods: {
         postLink() {
-            this.$router.push('/blackboard/'+this.id+'/'+this.postId);
+            this.$router.push('/news/'+this.newsId);
         }
-}
+    },
+
 }
 </script>
 

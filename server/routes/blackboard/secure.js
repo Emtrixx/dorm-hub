@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../utils/auth')
-const Hub = require('../models/hub')
-const Post = require('../models/post')
-const Comment = require('../models/comment')
+const auth = require('../../utils/auth')
+const Hub = require('../../models/hub')
+const Post = require('../../models/post')
+const Comment = require('../../models/comment')
 
 router.get(
   '/profile',
@@ -42,6 +42,13 @@ router.post('/blackboard/:hub', async (req,res) => {
   res.send(result)
 })
 
+
+//Delete Post TODO: NOT FINISHED
+router.delete('/blackboard/:hub/:postId', async (req,res) => {
+  const { postId } = req.params;
+  // await 
+  res.send(result)
+})
 
 
 module.exports = router;

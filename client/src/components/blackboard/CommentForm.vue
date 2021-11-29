@@ -38,6 +38,9 @@ export default {
           author: this.$store.getters.userId,
         };
       }
+
+      this.text = "";
+
       this.$emit("save-data", formData);
     },
   },
