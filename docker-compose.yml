@@ -7,8 +7,8 @@ services:
             context: ./client
             dockerfile: Dockerfile
         restart: unless-stopped
-        # volumes: 
-        #     - ./client:/app
+        volumes: 
+             - ./client:/app
         ports: 
             - 127.0.0.1:8082:80
         networks: 
