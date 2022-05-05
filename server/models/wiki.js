@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const WikiArticleSchema = new Schema({
     text: String,
+    textAsHtml: String,
     title: String
 }, { timestamps: true })
 

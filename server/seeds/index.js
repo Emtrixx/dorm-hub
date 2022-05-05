@@ -9,6 +9,9 @@ const Wiki = require('../models/wiki')
 const News = require('../models/news');
 const { WikiArticle } = require("../models/wiki");
 
+var MarkdownIt = require('markdown-it'),
+    md = new MarkdownIt();
+
 
 const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/dorm-hub"
 mongoose.connect(dbUrl, {
@@ -113,10 +116,14 @@ const seedDb = async () => {
 
     await Wiki.WikiArticle.deleteMany({})
     await Wiki.WikiCategory.deleteMany({})
-    
 
-    const wikiArticle1 = new Wiki.WikiArticle({ title: "Turnier AG", text: "Die Turnier AG spielt gerne turniere" });
-    const wikiArticle2 = new Wiki.WikiArticle({ title: "Schlefaz AG", text: "Die Schlefaz AG guckt Filme." });
+    let text = "### Die Turnier AG spielt gerne turniere";
+    const wikiArticle1 = new Wiki.WikiArticle({
+        title: "Turnier AG", text: text,
+        textAsHtml: md.render(text)
+    });
+    text = "Die Schlefaz AG guckt Filme.";
+    const wikiArticle2 = new Wiki.WikiArticle({ title: "Schlefaz AG", text: text, textAsHtml: md.render(text) });
     await wikiArticle1.save();
     await wikiArticle2.save();
     const wikiCategory = new Wiki.WikiCategory({

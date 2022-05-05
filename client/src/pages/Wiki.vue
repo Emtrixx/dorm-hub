@@ -5,68 +5,20 @@
       <a v-if="!editing" href="#" @click="editing = !editing">Edit</a>
       <a href="#" @click="editing = !editing" v-else>End editing</a>
     </div>
+    <!--
+      TODO write help page
+       <div v-if="editing">
+      <a href="" >Help on this Wiki</a>
+      </div> -->
     <div class="with-sidebar">
       <div class="sidebar">
         <div class="list-group">
-          <li
-            class="list-group-item"
+          <category-item
             v-for="category in wikiContent"
             :key="category.id"
-          >
-            <p v-if="!renamingCategory">{{ category.name }}</p>
-            <div v-else>
-              <input type="text" v-model="editingCategoryName" />
-              <button
-                @click="renameCategory(editingCategoryName, category._id)"
-              >
-                OK
-              </button>
-              <button @click="renamingCategory = false">Dismiss</button>
-            </div>
-            <div
-              v-if="
-                editing && category.modifiable && category.articles.length == 0
-              "
-            >
-              <a href="#" @click="removeCategory(category.name)"
-                ><i class="bi bi-trash"></i
-              ></a>
-              <a href="#" @click="openCategoryEditor(category.name)"
-                ><i class="bi bi-pen"></i
-              ></a>
-            </div>
-            <ul>
-              <li
-                class="list-group-item"
-                href="#"
-                @click="selectedArticle = article"
-                v-for="article in category.articles"
-                :key="article.id"
-              >
-                <a class="" href="#">
-                  {{ article.title }}
-                </a>
-                <div v-if="editing && category.modifiable">
-                  <a href="#" @click="removeArticle(article)"
-                    ><i class="bi bi-trash"></i
-                  ></a>
-                  <a href="#" @click="openArticleEditor(article)"
-                    ><i class="bi bi-pen"></i
-                  ></a>
-                </div>
-              </li>
-              <li v-if="editing && category.modifiable" class="list-group-item">
-                <a
-                  href="#"
-                  @click="
-                    openArticleEditor({});
-                    currentCategoryID = category._id;
-                  "
-                  >Add Article</a
-                >
-              </li>
-            </ul>
-          </li>
+            v-on:updatedwikidata="fetchData"
+            :thisCategory="category"
+          ></category-item>
           <li v-if="editing" class="list-group-item">
             <a href="#" v-if="!addingCategory" @click="addingCategory = true"
               >Add Category</a
@@ -81,55 +33,39 @@
       </div>
 
       <div class="content">
-        <div v-if="!editingArticle">
-          <h3>{{ selectedArticle.title }}</h3>
-          <p>
-            {{ selectedArticle.text }}
-          </p>
-        </div>
-        <div v-else>
-          <p>Title</p>
-          <input type="text" v-model="selectedArticle.title" />
-          <p>Article</p>
-          <textarea v-model="selectedArticle.text"></textarea>
-          <div>
-            <button
-              @click="addArticleToCategory(selectedArticle, currentCategoryID)"
-            >
-              Save Article
-            </button>
-            <button @click="editingArticle=false">Dismiss</button>
-          </div>
-        </div>
+        <content-item v-on:updatedwikidata="fetchData"></content-item>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import CategoryItem from "../components/wiki/CategoryItem.vue";
+import ContentItem from "../components/wiki/ContentItem.vue";
 export default {
+  components: { CategoryItem, ContentItem },
   data() {
     return {
-      wikiContent: [],
-      selectedArticle: {},
       loading: true,
       addingCategory: false,
-      currentCategoryID: "",
-      editingArticle: false,
       newCategoryInput: "",
+      editingArticle: false,
       editing: false,
-      renamingCategory: false,
-      editingCategoryName: "",
+      currentCategoryId: "",
+      currentArticleIdx: -1,
+      selectedArticleIndex: { categoryId: "", articleIdx: 0 },
+      selectedArticle: {},
     };
   },
   mounted() {
     this.fetchData();
   },
+  computed() {
+    return {
+      wikiContent: [],
+    };
+  },
   methods: {
-    openArticleEditor(article) {
-      this.editingArticle = true;
-      this.selectedArticle = article;
-    },
     async fetchData() {
       let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
       const res = await fetch(url + "wiki/all");
@@ -141,11 +77,17 @@ export default {
       }
       this.wikiContent = resData;
       this.loading = false;
+      try {
+        let selectedCategory = this.wikiContent.filter(
+          (cat) => cat._id === this.currentCategoryId
+        )[0];
+        this.selectedArticle = selectedCategory[this.currentArticleIdx];
+      } catch (e) {
+        console.log("article " + this.currentArticleIdx);
+        console.log("category " + this.currentCategoryId);
+      }
+      console.log("selectedArticle " + JSON.stringify(this.selectedArticle));
       this.$forceUpdate();
-    },
-    openCategoryEditor(categoryName) {
-      this.renamingCategory = true;
-      this.editingCategoryName = categoryName;
     },
     async addCategory(category) {
       let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
@@ -156,51 +98,6 @@ export default {
       });
       this.addingCategory = false;
       this.fetchData();
-    },
-    async renameCategory(categoryName, categoryId) {
-      this.editingCategoryName = false;
-      console.log(categoryName);
-      console.log(categoryId);
-      this.fetchData();
-    },
-    async removeCategory(category) {
-      if (confirm("Do you want to delete " + category + "?")) {
-        let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
-        let res = await fetch(url + "wiki/removeCategory", {
-          method: "post",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: category }),
-        });
-        if (!res.ok) alert("Could not delete category " + category + ".");
-        this.fetchData();
-        //this.editingArticle = false;
-      }
-    },
-    async removeArticle(article) {
-      console.log(article);
-      if (confirm("Do you want to delete " + article.title + "?")) {
-        let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
-        await fetch(url + "wiki/removeArticle", {
-          method: "post",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ articleId: article._id }),
-        });
-        this.fetchData();
-      }
-    },
-    async addArticleToCategory(article, categoryID) {
-      let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
-      await fetch(url + "wiki/addArticleToCategory", {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ category: categoryID, article: article }),
-      });
-      this.fetchData();
-      this.editingArticle = false;
-    },
-    async editArticle(article, newContent) {
-      console.log(article);
-      console.log(newContent);
     },
   },
 };

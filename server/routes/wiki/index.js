@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Wiki = require('../../models/wiki')
+const mongoose = require('mongoose')
+var MarkdownIt = require('markdown-it'),
+md = new MarkdownIt();
+
 
 router.get('/all', async (req, res) => {
     const categoriesList = await Wiki.WikiCategory.find().populate('articles');
@@ -25,31 +29,45 @@ router.post('/addCategory', async (req, res) => {
 
 router.post('/removeCategory', async (req, res) => {
     let body = req.body;
-    console.log("deleting" + body.name)
     await Wiki.WikiCategory.deleteOne({ "name": body.name });
     res.send("It worked!");
 })
 
+router.post('/renameCategory', async(req,res) => {
+    let categoryId = req.body.categoryId;
+    let newName = req.body.newName;
+    let categoryJson = await Wiki.WikiCategory.findOne({ "_id": categoryId });
+    categoryJson["name"] = newName;
+    await categoryJson.save();
+    res.end();
+})
 
-router.post('/addArticleToCategory', async (req, res) => {
+router.post('/setArticleToCategory', async (req, res) => {
     let body = req.body;
     let newArticle = body.article;
-   
+    newArticle.textAsHtml = md.render(newArticle.text).toString();
     if (typeof newArticle._id !== "undefined") {
-        let articleJson = await Wiki.WikiArticle.findOne({ "_id": newArticle._id });
+        let articleJson = await Wiki.WikiArticle.findOne({ "_id": mongoose.Types.ObjectId(newArticle._id) });
         articleJson.title = newArticle.title;
         articleJson.text = newArticle.text;
+        articleJson.textAsHtml = newArticle.textAsHtml;
         await articleJson.save();
     }
     else {
         let categoryJson = await Wiki.WikiCategory.findOne({ "_id": body.category }).populate('articles');
-        let newArticleJson = await Wiki.WikiArticle({ "title": newArticle.title, "text": newArticle.text })
+        let newArticleJson = await Wiki.WikiArticle({ "title": newArticle.title, "text": newArticle.text, "textAsHtml": newArticle.textAsHtml })
         await newArticleJson.save();
         categoryJson.articles.push(newArticleJson._id);
         await categoryJson.save();
     }
+    res.end();
+})
 
-    res.send("It worked!");
+router.get('/getArticle', async(req,res) => {
+    let articleId = req.query.id;
+    console.log("articleId: "+articleId);
+    let article = await Wiki.WikiArticle.find({ "_id": mongoose.Types.ObjectId(articleId) });
+    res.send(JSON.stringify(article));
 })
 
 router.post('/removeArticle', async (req, res) => {

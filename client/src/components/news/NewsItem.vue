@@ -16,7 +16,6 @@ export default {
             this.$router.push('/news/'+this.newsId);
         }
     },
-
 }
 </script>
 
