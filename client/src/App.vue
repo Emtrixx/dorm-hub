@@ -9,6 +9,7 @@
 </template>
 
 <script>
+console.log(process.env.VUE_APP_HOST)
 import TheNavbar from './components/UI/TheNavbar.vue'
 import TheFooter from './components/UI/TheFooter.vue'
 
@@ -22,6 +23,7 @@ export default {
   },
 }
 </script>
+
 
 <style>
 #main {

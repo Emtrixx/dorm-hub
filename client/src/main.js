@@ -17,3 +17,4 @@ app.component('base-card', BaseCard)
 
 
 app.mount('#app')
+console.log(process.env.VUE_APP_SERVER_URL)

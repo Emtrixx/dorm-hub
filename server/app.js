@@ -11,6 +11,7 @@ const auth = require('./utils/auth')
 
 //enables cross origin resources
 app.use(cors())
+//Vue.http.headers.common['Access-Control-Allow-Origin'] = '*'
 //makes json and urlencoded response data usable
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
