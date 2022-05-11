@@ -52,6 +52,8 @@ router.post('/setArticleToCategory', async (req, res) => {
         articleJson.text = newArticle.text;
         articleJson.textAsHtml = newArticle.textAsHtml;
         await articleJson.save();
+        res.set('Content-Type', 'application/json')
+        res.end("{}");
     }
     else {
         let categoryJson = await Wiki.WikiCategory.findOne({ "_id": body.category }).populate('articles');
@@ -59,8 +61,9 @@ router.post('/setArticleToCategory', async (req, res) => {
         await newArticleJson.save();
         categoryJson.articles.push(newArticleJson._id);
         await categoryJson.save();
+       res.send("hallo");
     }
-    res.end();
+    //res.end();
 })
 
 router.get('/getArticle', async(req,res) => {

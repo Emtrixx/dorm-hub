@@ -9,7 +9,7 @@ const UserSchema = new Schema({
 },{ timestamps: true })
 
 //Passport handles password and email
-//Also adds funtions like register to User Model
+//Also adds functions like register to User Model
 UserSchema.plugin(passportLocalMongoose, {
     usernameField: 'email',
     usernameLowerCase: true,

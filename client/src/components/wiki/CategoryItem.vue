@@ -119,13 +119,13 @@ export default {
     openArticleEditor(articleIdx) {
       this.$parent.editingArticle = true;
       this.$parent.selectedArticle = this.category.articles[articleIdx];
-      this.$parent.currentCategoryId = this.category._id;
-      this.$parent.currentArticleIdx = articleIdx;
+      this.$parent.selectedArticleIndex.categoryId = this.category._id;
+      this.$parent.selectedArticleIndex.articleIdx = articleIdx;
     },
     openArticleCreator() {
-      this.$parent.editingArticle = true;
-      this.$parent.currentCategoryId = this.category._id;
-      this.$parent.currentArticleIdx = this.category.articles.length + 1;
+      this.$parent.addingArticle = true;
+      this.$parent.selectedArticleIndex.categoryId = this.category._id;
+      this.$parent.selectedArticleIndex.articleIdx = this.category.articles.length;
       this.$parent.selectedArticle = { title: "", text: "" };
     },
   },

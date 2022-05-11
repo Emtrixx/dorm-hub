@@ -23,17 +23,29 @@
             <a href="#" v-if="!addingCategory" @click="addingCategory = true"
               >Add Category</a
             >
-            <div v-else>
+            <div v-else class="form-group">
               <input type="text" v-model="newCategoryInput" />
-              <button @click="addCategory(newCategoryInput)">Add</button>
-              <button @click="addingCategory = false">Dismiss</button>
+              <button
+                class="btn btn-primary"
+                @click="addCategory(newCategoryInput)"
+              >
+                Add
+              </button>
+              <button
+                class="btn btn-outline-primary"
+                @click="addingCategory = false"
+              >
+                Dismiss
+              </button>
             </div>
           </li>
         </div>
       </div>
 
       <div class="content">
-        <content-item v-on:updatedwikidata="fetchData"></content-item>
+        <content-item
+          v-on:updatedwikidata="fetchData"
+        ></content-item>
       </div>
     </div>
   </div>
@@ -50,9 +62,8 @@ export default {
       addingCategory: false,
       newCategoryInput: "",
       editingArticle: false,
+      addingArticle: false,
       editing: false,
-      currentCategoryId: "",
-      currentArticleIdx: -1,
       selectedArticleIndex: { categoryId: "", articleIdx: 0 },
       selectedArticle: {},
     };
@@ -63,10 +74,12 @@ export default {
   computed() {
     return {
       wikiContent: [],
+      //selectedArticle:{title:"",text:""}
     };
   },
   methods: {
     async fetchData() {
+      console.log("fetch data")
       let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
       const res = await fetch(url + "wiki/all");
       const resData = await res.json();
@@ -77,17 +90,24 @@ export default {
       }
       this.wikiContent = resData;
       this.loading = false;
+      this.updateSelectedArticle();
+      this.$forceUpdate();
+    },
+    updateSelectedArticle() {
+      //set selected article to selectedArticleIndex
       try {
         let selectedCategory = this.wikiContent.filter(
-          (cat) => cat._id === this.currentCategoryId
+          (cat) => cat._id === this.selectedArticleIndex.categoryId
         )[0];
-        this.selectedArticle = selectedCategory[this.currentArticleIdx];
+        console.log(JSON.stringify(selectedCategory))
+        this.selectedArticle =
+          selectedCategory["articles"][this.selectedArticleIndex.articleIdx];
+        console.log("article idx " + this.selectedArticleIndex.articleIdx)
+        console.log("selected article " + JSON.stringify(this.selectedArticle))
       } catch (e) {
-        console.log("article " + this.currentArticleIdx);
+        console.log("article " + this.selectedArticleIndex.articleIdx);
         console.log("category " + this.currentCategoryId);
       }
-      console.log("selectedArticle " + JSON.stringify(this.selectedArticle));
-      this.$forceUpdate();
     },
     async addCategory(category) {
       let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
