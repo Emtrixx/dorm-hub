@@ -1,61 +1,62 @@
-	version: "3"	
-services:	
-    client:	
-        image: vue-app 	
-        build: 	
-            context: ./client	
-            dockerfile: Dockerfile	
-        restart: unless-stopped	
-        volumes: 	
-             - ./client:/app	
-        ports: 	
-            - 127.0.0.1:8082:80	
-        networks: 	
-            - dormhub-app	
-        depends_on: 	
-            - server    	
-    server:	
-        image: dormhub-server	
-        build: 	
-            context: ./server	
-            dockerfile: Dockerfile	
-        restart: unless-stopped	
-        ports: 	
-            - 127.0.0.1:8081:8081	
-        environment: 	
-            - DB_URL=mongodb://mongo:27017/dorm-hub	
-        networks: 	
-            - dormhub-app	
-        depends_on: 	
-            - mongo	
-    mongo:	
-        image: mongo:latest	
-        restart: unless-stopped	
-        networks: 	
-            - dormhub-app	
-        volumes: 	
-            - mongo-data:/data/db	
-    mongo-express:	
-        image: mongo-express	
-        restart: unless-stopped	
-        networks: 	
-            - dormhub-app	
-        ports: 	
-            - 127.0.0.1:8085:8081	
-    seeds:	
-        image: dormhub-seeds	
-        build: 	
-            context: ./server	
-            dockerfile: DockerfileSeeds	
-        environment: 	
-            - DB_URL=mongodb://mongo:27017/dorm-hub	
-        networks: 	
-            - dormhub-app	
-        depends_on: 	
-            - mongo	
-networks: 	
-    dormhub-app:	
-        driver: bridge	
-volumes: 	
-    mongo-data:	
+version: "3"
+
+services:
+    client:
+        image: vue-app
+        build:
+            context: ./client
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        volumes:
+            - ./client:/app
+        ports:
+            - 127.0.0.1:8082:80
+        networks:
+            - dormhub-app
+        depends_on:
+            - server
+    server:
+        image: dormhub-server
+        build:
+            context: ./server
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        ports:
+            - 127.0.0.1:8081:8081
+        environment:
+            - DB_URL=mongodb://mongo:27017/dorm-hub
+        networks:
+            - dormhub-app
+        depends_on:
+            - mongo
+    mongo:
+        image: mongo:latest
+        restart: unless-stopped
+        networks:
+            - dormhub-app
+        volumes:
+            - mongo-data:/data/db
+    mongo-express:
+        image: mongo-express
+        restart: unless-stopped
+        networks:
+            - dormhub-app
+        ports:
+            - 127.0.0.1:8085:8081
+    # seeds:
+    #     image: dormhub-seeds
+    #     build:
+    #         context: ./server
+    #         dockerfile: DockerfileSeeds
+    #     environment:
+    #         - DB_URL=mongodb://mongo:27017/dorm-hub
+    #     networks:
+    #         - dormhub-app
+    #     depends_on:
+    #         - mongo
+networks:
+    dormhub-app:
+        driver: bridge
+volumes:
+    mongo-data:
         driver: local
