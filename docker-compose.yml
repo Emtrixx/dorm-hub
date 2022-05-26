@@ -37,17 +37,17 @@ services:
             - dormhub-app
         volumes: 
             - mongo-data:/data/db
-    # seeds:
-    #     image: dormhub-seeds
-    #     build: 
-    #         context: ./server
-    #         dockerfile: DockerfileSeeds
-    #     environment: 
-    #         - DB_URL=mongodb://mongo:27017/dorm-hub
-    #     networks: 
-    #         - dormhub-app
-    #     depends_on: 
-    #         - mongo
+    seeds:
+        image: dormhub-seeds
+        build: 
+            context: ./server
+            dockerfile: DockerfileSeeds
+        environment: 
+            - DB_URL=mongodb://mongo:27017/dorm-hub
+        networks: 
+            - dormhub-app
+        depends_on: 
+            - mongo
 networks: 
     dormhub-app:
         driver: bridge
