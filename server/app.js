@@ -6,7 +6,6 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const cors = require('cors')
-const passport = require('passport')
 const auth = require('./utils/auth')
 
 //enables cross origin resources
@@ -26,6 +25,7 @@ mongoose.connect(dbUrl, {
 })
     .then(() => {
         console.log("Connected to mongodb");
+        console.log(dbUrl);
     }).catch(() => {
         console.log("ERROR - Could not connect to mongodb");
     })
@@ -42,6 +42,8 @@ const blackboardSecureRoutes = require('./routes/blackboard/secure');
 const newsRoutes = require('./routes/news/index')
 const newsSecureRoutes = require('./routes/news/secure');
 
+const wikiRoutes = require('./routes/wiki/index')
+
 // Routing
 // Secure routes use auth middleware before routing
 app.use('/', generalRoutes)
@@ -53,6 +55,8 @@ app.use('/blackboard', auth.requireJWT, blackboardSecureRoutes)
 
 app.use('/news', newsRoutes)
 app.use('/news', auth.requireJWT, newsSecureRoutes)
+
+app.use('/wiki', wikiRoutes)
 
 
 //error handler. Sends error as json
