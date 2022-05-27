@@ -26,6 +26,7 @@ mongoose.connect(dbUrl, {
 })
     .then(() => {
         console.log("Connected to mongodb");
+        console.log(dbUrl);
     }).catch(() => {
         console.log("ERROR - Could not connect to mongodb");
     })
@@ -39,8 +40,12 @@ const secureRoutes = require('./routes/blackboard/secure');
 const newsRoutes = require('./routes/news/index')
 const newsSecureRoutes = require('./routes/news/secure');
 
+//wiki
+const wikiRoutes = require('./routes/wiki/index')
+
 //News Routes
 app.use('/news', newsRoutes)
+app.use('/wiki', wikiRoutes)
 //Blackboard and general routes
 app.use('/', routes)
 

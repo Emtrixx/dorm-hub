@@ -4,12 +4,17 @@ const Hub = require('../models/hub')
 const User = require('../models/user')
 const Comment = require('../models/comment')
 const Post = require('../models/post');
+const Wiki = require('../models/wiki')
 //News
-const News = require('../models/news')
+const News = require('../models/news');
+const { WikiArticle } = require("../models/wiki");
+
+var MarkdownIt = require('markdown-it'),
+    md = new MarkdownIt();
 
 
 const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/dorm-hub"
-mongoose.connect(dbUrl, { 
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
@@ -96,21 +101,40 @@ const seedDb = async () => {
     const news = new News({
         title: 'Superspannende Nachricht',
         content: [{
-                contentType: 'text',
-                content: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-            },
-            {
-                contentType: 'text',
-                content: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-            }
+            contentType: 'text',
+            content: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
+        },
+        {
+            contentType: 'text',
+            content: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
+        }
         ],
         author: user.id,
         comments: ["60a2bbb836a8142d7848819e"],
     })
     await news.save()
 
+    await Wiki.WikiArticle.deleteMany({})
+    await Wiki.WikiCategory.deleteMany({})
+
+    let text = "### Die Turnier AG spielt gerne turniere";
+    const wikiArticle1 = new Wiki.WikiArticle({
+        title: "Turnier AG", text: text,
+        textAsHtml: md.render(text)
+    });
+    text = "Die Schlefaz AG guckt Filme.";
+    const wikiArticle2 = new Wiki.WikiArticle({ title: "Schlefaz AG", text: text, textAsHtml: md.render(text) });
+    await wikiArticle1.save();
+    await wikiArticle2.save();
+    const wikiCategory = new Wiki.WikiCategory({
+        name: "AGs",
+        modifiable: false,
+        articles: [wikiArticle1._id, wikiArticle2._id
+        ],
+    })
+    await wikiCategory.save()
 }
 
-seedDb().then( () => {
+seedDb().then(() => {
     mongoose.connection.close()
 })
