@@ -6,7 +6,6 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const cors = require('cors')
-const passport = require('passport')
 const auth = require('./utils/auth')
 
 //enables cross origin resources
@@ -32,27 +31,32 @@ mongoose.connect(dbUrl, {
     })
 
 
-//unsecured routes
-const routes = require('./routes/blackboard/index')
-//secured routes(for logged in users)
-const secureRoutes = require('./routes/blackboard/secure');
+// Routes files
+const generalRoutes = require('./routes/general/index')
+
+const authRoutes = require('./routes/auth')
+
+const blackboardRoutes = require('./routes/blackboard/index')
+const blackboardSecureRoutes = require('./routes/blackboard/secure');
 
 const newsRoutes = require('./routes/news/index')
 const newsSecureRoutes = require('./routes/news/secure');
 
-//wiki
 const wikiRoutes = require('./routes/wiki/index')
 
-//News Routes
+// Routing
+// Secure routes use auth middleware before routing
+app.use('/', generalRoutes)
+
+app.use('/auth', authRoutes)
+
+app.use('/blackboard', blackboardRoutes)
+app.use('/blackboard', auth.requireJWT, blackboardSecureRoutes)
+
 app.use('/news', newsRoutes)
-app.use('/wiki', wikiRoutes)
-//Blackboard and general routes
-app.use('/', routes)
-
-//auth middleware before routing
 app.use('/news', auth.requireJWT, newsSecureRoutes)
-app.use('/', auth.requireJWT, secureRoutes)
 
+app.use('/wiki', wikiRoutes)
 
 
 //error handler. Sends error as json
