@@ -11,9 +11,50 @@
             <li><a href="#">Turnier-AG</a></li>
         </ul>
     </div>
+<<<<<<< Updated upstream
     <div class="content">
         <h3>content</h3>
         <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Distinctio ipsum, adipisci architecto nihil maiores facere fugit quisquam dolore. Beatae quo ea voluptatibus saepe. Nulla mollitia culpa minima quibusdam assumenda? Fuga.</p>
+=======
+  
+    <div class="with-sidebar">
+      <div class="sidebar">
+        <div class="list-group">
+          <category-item
+            v-for="category in wikiContent"
+            :key="category.id"
+            v-on:updatedwikidata="fetchData"
+            :thisCategory="category"
+          ></category-item>
+          <li v-if="editing" class="list-group-item">
+            <a href="#" v-if="!addingCategory" @click="addingCategory = true"
+              >Add Category</a
+            >
+            <div v-else class="form-group">
+              <input type="text" v-model="newCategoryInput" />
+              <button
+                class="btn btn-primary"
+                @click="addCategory(newCategoryInput)"
+              >
+                Add
+              </button>
+              <button
+                class="btn btn-outline-primary"
+                @click="addingCategory = false"
+              >
+                Dismiss
+              </button>
+            </div>
+          </li>
+        </div>
+      </div>
+
+      <div class="content">
+        <content-item
+          v-on:updatedwikidata="fetchData"
+        ></content-item>
+      </div>
+>>>>>>> Stashed changes
     </div>
 </div>
 </div>

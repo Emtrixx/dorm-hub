@@ -7,7 +7,7 @@
       <post-item
         v-for="post in posts"
         :key="post._id"
-        :id ="post.hub.name"
+        :id="post.hub.name"
         :postId="post._id"
         :title="post.title"
         :text="post.text"
@@ -21,31 +21,32 @@
 import PostItem from "./PostItem";
 export default {
   components: {
-    PostItem
+    PostItem,
   },
   data() {
-      return {
-          loading: true,
-          posts: []
-      }
+    return {
+      loading: true,
+      posts: [],
+    };
   },
   created() {
     this.fetchData();
   },
   methods: {
     async fetchData() {
-        const res = await fetch(process.env.VUE_APP_HOST + `blackboard/allPosts`)
-        const resData = await res.json()
+      let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+      const res = await fetch(url + `blackboard/allPosts`);
+      const resData = await res.json();
 
-        if(!res.ok) {
-            const error = new Error(resData.message || 'Failed to fetch post!')
-            console.log(error.message);
-            throw error        
-        }
+      if (!res.ok) {
+        const error = new Error(resData.message || "Failed to fetch post!");
+        console.log(error.message);
+        throw error;
+      }
 
-        this.posts = resData
-        this.loading = false
-    }
+      this.posts = resData;
+      this.loading = false;
+    },
   },
 };
 </script>

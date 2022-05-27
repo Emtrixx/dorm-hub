@@ -1,6 +1,8 @@
+let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+
 export default {
     async fetchHub(context, payload) {
-        const res = await fetch(process.env.VUE_APP_HOST + 'blackboard/'+payload.hub)
+        const res = await fetch(url + 'blackboard/'+payload.hub)
         const resData = await res.json();
 
         if(!res.ok) {
@@ -12,7 +14,7 @@ export default {
         context.commit('fetchHub', {hub: resData})
     },
     async fetchPost(context,payload) {
-        const res = await fetch(process.env.VUE_APP_HOST + `blackboard/${payload.hub}/${payload.postId}`)
+        const res = await fetch(url + `blackboard/${payload.hub}/${payload.postId}`)
         const resData = await res.json()
 
         if(!res.ok) {
@@ -25,7 +27,7 @@ export default {
         context.commit('fetchPost', {post: resData})
     },
     async createPost(context, payload) {
-        const res = await fetch(process.env.VUE_APP_HOST + 'blackboard/'+payload.hub, {
+        const res = await fetch(url + 'blackboard/'+payload.hub, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': "Bearer " + localStorage.getItem('token')

@@ -109,6 +109,28 @@ const seedDb = async () => {
     })
     await news.save()
 
+<<<<<<< Updated upstream
+=======
+    await Wiki.WikiArticle.deleteMany({})
+    await Wiki.WikiCategory.deleteMany({})
+
+    let text = "### Die Turnier AG spielt gerne turniere";
+    const wikiArticle1 = new Wiki.WikiArticle({
+        title: "Turnier AG", text: text,
+        textAsHtml: md.render(text)
+    });
+    text = "Die Schlefaz AG guckt Filme.";
+    const wikiArticle2 = new Wiki.WikiArticle({ title: "Schlefaz AG", text: text, textAsHtml: md.render(text) });
+    await wikiArticle1.save();
+    await wikiArticle2.save();
+    const wikiCategory = new Wiki.WikiCategory({
+        name: "AGs",
+        modifiable: true,
+        articles: [wikiArticle1._id, wikiArticle2._id
+        ],
+    })
+    await wikiCategory.save()
+>>>>>>> Stashed changes
 }
 
 seedDb().then( () => {
