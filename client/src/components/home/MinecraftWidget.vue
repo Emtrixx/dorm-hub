@@ -28,13 +28,20 @@ export default {
   data() {
     return {
       loading: true,
-      data: {}
+      data: {},
+      interval_id: undefined
     };
   },
   created() {
-      this.fetchData()
+      this.someMethod();
   },
   methods: {
+    async someMethod() {
+            // Execute fetchData every 3 seconds
+            this.interval_id = setInterval(() => {
+                this.fetchData();
+            }, 3000);
+    },
     async fetchData() {
       var url = "https://api.minetools.eu/ping/dorm-hub.de/25565";
       const res = await fetch(url);
@@ -48,14 +55,13 @@ export default {
       console.log('fetching minecraft data')
       this.data = resData
       this.loading = false
-
-      await new Promise(resolve => {
-        setTimeout(resolve, 10000)
-      })
-
-      this.fetchData()
     },
   },
+  unmounted() {
+    if(this.interval_id) {
+      clearInterval(this.interval_id);
+    }
+  }
 };
 </script>
 
