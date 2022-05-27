@@ -37,10 +37,11 @@ export default {
   },
   methods: {
     async someMethod() {
-            // Execute fetchData every 3 seconds
+            this.fetchData();
+            // Execute fetchData every 5 seconds
             this.interval_id = setInterval(() => {
                 this.fetchData();
-            }, 3000);
+            }, 5000);
     },
     async fetchData() {
       var url = "https://api.minetools.eu/ping/dorm-hub.de/25565";
