@@ -17,7 +17,7 @@ router.get(
 );
 
 //Create Comment
-router.post('/blackboard/:hub/:postId', async (req, res) => {
+router.post('/:hub/:postId', async (req, res) => {
   const { postId } = req.params
   const post = await Post.findById(postId)
   const comment = new Comment(req.body)
@@ -29,22 +29,20 @@ router.post('/blackboard/:hub/:postId', async (req, res) => {
 
 
 //Create Post
-router.post('/blackboard/:hub', async (req,res) => {
+router.post('/:hub', async (req,res) => {
   const {hub} = req.params;
-  console.log(req.body)
   const newPost = new Post(req.body)
   const selectedHub = await Hub.findOne({name: hub})
   newPost.hub = selectedHub 
   const result = await newPost.save()
   selectedHub.posts.unshift(newPost)
   await selectedHub.save()
-  console.log(result)
   res.send(result)
 })
 
 
 //Delete Post TODO: NOT FINISHED
-router.delete('/blackboard/:hub/:postId', async (req,res) => {
+router.delete('/:hub/:postId', async (req,res) => {
   const { postId } = req.params;
   // await 
   res.send(result)
