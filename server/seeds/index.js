@@ -4,12 +4,17 @@ const Hub = require('../models/hub')
 const User = require('../models/user')
 const Comment = require('../models/comment')
 const Post = require('../models/post');
+const Wiki = require('../models/wiki')
 //News
-const News = require('../models/news')
+const News = require('../models/news');
+const { WikiArticle } = require("../models/wiki");
+
+var MarkdownIt = require('markdown-it'),
+    md = new MarkdownIt();
 
 
 const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/dorm-hub"
-mongoose.connect(dbUrl, { 
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
@@ -96,21 +101,19 @@ const seedDb = async () => {
     const news = new News({
         title: 'Superspannende Nachricht',
         content: [{
-                contentType: 'text',
-                content: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-            },
-            {
-                contentType: 'text',
-                content: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-            }
+            contentType: 'text',
+            content: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
+        },
+        {
+            contentType: 'text',
+            content: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
+        }
         ],
         author: user.id,
         comments: ["60a2bbb836a8142d7848819e"],
     })
     await news.save()
 
-<<<<<<< Updated upstream
-=======
     await Wiki.WikiArticle.deleteMany({})
     await Wiki.WikiCategory.deleteMany({})
 
@@ -130,9 +133,9 @@ const seedDb = async () => {
         ],
     })
     await wikiCategory.save()
->>>>>>> Stashed changes
+
 }
 
-seedDb().then( () => {
+seedDb().then(() => {
     mongoose.connection.close()
 })

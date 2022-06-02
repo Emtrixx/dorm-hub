@@ -1,5 +1,8 @@
+
+
 <template>
 <div>
+
 <the-navbar></the-navbar>
 <div id="main" class="container">
   <router-view></router-view>
@@ -21,6 +24,8 @@ export default {
       this.$store.dispatch('tryLogin')
   },
 }
+
+
 </script>
 
 <style>
