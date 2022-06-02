@@ -35,12 +35,8 @@ export default {
   },
   methods: {
     async fetchData() {
-<<<<<<< Updated upstream
-      const res = await fetch(process.env.VUE_APP_HOST + "news/all");
-=======
       let url = process.env.VUE_APP_HOST || "http://localhost:8081/"
       const res = await fetch(url + "news/all");
->>>>>>> Stashed changes
       const resData = await res.json();
 
       if (!res.ok) {
