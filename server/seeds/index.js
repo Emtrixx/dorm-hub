@@ -41,9 +41,6 @@ const seedDb = async () => {
     //Instead of seeding first user you can just register on the site first before seeding the rest
     user = await User.findOne({});
 
-
-
-
     //Blackboard
     //DELETE OLD
     await Comment.deleteMany({})
