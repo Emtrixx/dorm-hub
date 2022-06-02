@@ -3,9 +3,13 @@
     <h3 class="text-center">All Hubs</h3>
     <p v-if="loading">Loading</p>
     <div v-else>
-      <button class="btn btn-info" @click="fetchData">Refresh</button>
-      <post-item v-for="post in posts" :key="post._id" :id="post.hub.name" :postId="post._id" :title="post.title"
-        :text="post.text"></post-item>
+      <div>
+        <button class="btn btn-info" @click="fetchData">Refresh</button>
+      </div>
+      <div class="row">
+        <post-item v-for="post in posts" :post="post" :key="post._id" :id="post.hub.name"></post-item>
+      </div>
+      
     </div>
   </div>
 </template>
