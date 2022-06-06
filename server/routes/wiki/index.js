@@ -11,6 +11,7 @@ router.get('/all', async (req, res) => {
     res.send(JSON.stringify(categoriesList))
 })
 
+
 router.post('/addCategory', async (req, res) => {
     let body = req.body;
     const thisCategory = await Wiki.WikiCategory.find({ 'name': body.name });
