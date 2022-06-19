@@ -48,6 +48,12 @@ router.post('/:hub', async (req, res) => {
   res.send(result)
 })
 
+//Get users Posts
+router.get('/myPosts', async(req, res) => {
+  //TODO
+  const posts = await Post.find().where("author").equals(req.user).populate('hub').populate('author')
+  res.send(JSON.stringify(posts.reverse()))
+})
 
 //Delete Post TODO: NOT FINISHED
 router.delete('/:hub/:postId', async (req, res) => {

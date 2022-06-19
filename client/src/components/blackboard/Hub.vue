@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="text-center">{{ id.toUpperCase() }}</h3>
+    <h3 class="text-center">{{ id.charAt(0).toUpperCase() + id.slice(1) }}</h3>
     <router-view class=""></router-view>
   </div>
 </template>
@@ -9,4 +9,6 @@
 export default {
   props: ["id"],
 };
+
+
 </script>

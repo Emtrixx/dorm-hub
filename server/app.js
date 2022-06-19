@@ -50,8 +50,9 @@ app.use('/', generalRoutes)
 
 app.use('/auth', authRoutes)
 
+app.use('/blackboard-secure', auth.requireJWT, blackboardSecureRoutes)
 app.use('/blackboard', blackboardRoutes)
-app.use('/blackboard', auth.requireJWT, blackboardSecureRoutes)
+
 
 app.use('/news', newsRoutes)
 app.use('/news', auth.requireJWT, newsSecureRoutes)
