@@ -7,7 +7,17 @@ const app = express()
 const mongoose = require('mongoose')
 const cors = require('cors')
 const auth = require('./utils/auth')
+const fileUpload = require('express-fileupload');
 
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const _ = require('lodash');
+
+app.use(express.static('post-images'));
+// enable files upload
+app.use(fileUpload({
+    createParentPath: true
+}));
 //enables cross origin resources
 app.use(cors())
 //makes json and urlencoded response data usable

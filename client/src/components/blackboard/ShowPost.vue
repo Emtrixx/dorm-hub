@@ -7,6 +7,7 @@
                 <h1>{{ post.title }}</h1>
                 <p>by <strong>{{ post.author.firstName }} {{ post.author.lastName }}</strong></p>
                 <p>{{ post.text }}</p>
+                <img src="http:\\localhost:8081\blackboard/post-images/elena5.png" class="img-fluid">
             </base-card>
             <hr>
             <comment-form @save-data="createComment"></comment-form>

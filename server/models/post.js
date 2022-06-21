@@ -21,6 +21,9 @@ const PostSchema = new Schema({
     comments: [{
         type: Schema.Types.ObjectId,
         ref: "Comment"
+    }],
+    images: [{
+        type: String
     }]
 },{ timestamps: true })
 
