@@ -36,8 +36,6 @@ export default {
   methods: {
     async fetchData() {
       let url = process.env.VUE_APP_HOST || "http://localhost:8081/"
-      console.log(process.env.VUE_APP_HOST)
-      console.log(process.env)
       const res = await fetch(url + "news/all");
       const resData = await res.json();
 

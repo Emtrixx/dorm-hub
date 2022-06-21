@@ -43,6 +43,7 @@ const newsRoutes = require('./routes/news/index')
 const newsSecureRoutes = require('./routes/news/secure');
 
 const wikiRoutes = require('./routes/wiki/index')
+const wikiSecureRoutes = require('./routes/wiki/secure')
 
 // Routing
 // Secure routes use auth middleware before routing
@@ -57,7 +58,7 @@ app.use('/news', newsRoutes)
 app.use('/news', auth.requireJWT, newsSecureRoutes)
 
 app.use('/wiki', wikiRoutes)
-
+app.use('/wiki-secure', auth.requireJWT,wikiSecureRoutes)
 
 //error handler. Sends error as json
 app.use(function(err, req, res, next) {
