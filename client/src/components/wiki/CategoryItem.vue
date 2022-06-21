@@ -3,51 +3,35 @@
     <p v-if="!renamingCategory">{{ category.name }}</p>
     <div v-else class="form-group">
       <input type="text" v-model="editingCategoryName" />
-      <button
-        class="btn btn-primary"
-        @click="renameCategory(editingCategoryName, category._id)"
-      >
+      <button class="btn btn-primary" @click="renameCategory(editingCategoryName, category._id)">
         OK
       </button>
       <button @click="renamingCategory = false" class="btn btn-outline-primary">
         Dismiss
       </button>
     </div>
-    <span
-      v-if="
-        $parent.editing && category.modifiable && category.articles.length == 0
-      "
-    >
-      <a href="#" @click="removeCategory(category.name)"
-        ><i class="bi bi-trash"></i
-      ></a>
+    <span v-if="
+      $parent.editing && category.modifiable && category.articles.length == 0
+    ">
+      <a href="#" @click="removeCategory(category.name)"><i class="bi bi-trash"></i></a>
     </span>
     <span v-if="category.modifiable">
-      <a
-        href="#"
-        @click="openCategoryEditor(category.name)"
-        v-if="$parent.editing"
-        ><i class="bi bi-pen"></i
-      ></a>
+      <a href="#" @click="openCategoryEditor(category.name)" v-if="$parent.editing"><i class="bi bi-pen"></i></a>
     </span>
     <ul>
-      <li
-        class="list-group-item"
-        href="#"
-        @click="$parent.selectedArticle = article"
-        v-for="(article, articleIdx) in category.articles"
-        :key="article.id"
-      >
+      <li class="list-group-item" href="#" @click="$parent.selectedArticle = article"
+        v-for="(article, articleIdx) in category.articles" :key="article.id">
         <a class="" href="#" @click="$parent.editingArticle = false">
           {{ article.title }}
         </a>
-        <div v-if="$parent.editing && category.modifiable">
-          <a href="#" @click="removeArticle(article)"
-            ><i class="bi bi-trash"></i
-          ></a>
-          <a href="#" @click="openArticleEditor(articleIdx)"
-            ><i class="bi bi-pen"></i
-          ></a>
+        <div v-if="($parent.editing && category.modifiable) && article.author._id === userId()">
+          <a href="#" @click="removeArticle(article)"><i class="bi bi-trash"></i></a>
+          <a href="#" @click="openArticleEditor(articleIdx)"><i class="bi bi-pen"></i></a>
+        </div>
+        <div v-else>
+          <div v-if="$parent.editing && article.author._id !== userId()">editable by {{ article.author.firstName + " " +
+              article.author.lastName
+          }}</div>
         </div>
       </li>
       <li v-if="$parent.editing && category.modifiable" class="list-group-item">
@@ -72,6 +56,9 @@ export default {
     },
   },
   methods: {
+    userId() {
+      return this.$store.getters['userId']
+    },
     openCategoryEditor(categoryName) {
       this.renamingCategory = true;
       this.editingCategoryName = categoryName;
@@ -119,6 +106,7 @@ export default {
     openArticleEditor(articleIdx) {
       this.$parent.editingArticle = true;
       this.$parent.selectedArticle = this.category.articles[articleIdx];
+      this.$parent.selectedArticle.author = this.userId();
       this.$parent.selectedArticleIndex.categoryId = this.category._id;
       this.$parent.selectedArticleIndex.articleIdx = articleIdx;
     },
@@ -127,6 +115,7 @@ export default {
       this.$parent.selectedArticleIndex.categoryId = this.category._id;
       this.$parent.selectedArticleIndex.articleIdx = this.category.articles.length;
       this.$parent.selectedArticle = { title: "", text: "" };
+      this.$parent.selectedArticle.author = this.userId();
     },
   },
 };

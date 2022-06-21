@@ -16,7 +16,7 @@
 import PostItem from "./PostItem";
 export default {
   components: {
-    PostItem
+    PostItem,
   },
   data() {
     return {

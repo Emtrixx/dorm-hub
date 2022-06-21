@@ -4,13 +4,17 @@ const Schema = mongoose.Schema;
 const WikiArticleSchema = new Schema({
     text: String,
     textAsHtml: String,
-    title: String
+    title: String,
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    },
 }, { timestamps: true })
 
 const WikiCategorySchema = new Schema({
     articles: [{type: Schema.Types.ObjectId,ref: 'WikiArticle'}],
     name: String,
-    modifiable: Boolean
+    modifiable: Boolean,
 }, { timestamps: true })
 
 

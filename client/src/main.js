@@ -3,7 +3,7 @@
 import { createApp } from 'vue'
 
 import "bootstrap/dist/css/bootstrap.min.css"
-
+import "./globals.js"
 import App from './App.vue'
 import router from './router.js'
 import store from './store/index'

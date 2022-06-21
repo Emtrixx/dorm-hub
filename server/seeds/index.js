@@ -41,9 +41,6 @@ const seedDb = async () => {
     //Instead of seeding first user you can just register on the site first before seeding the rest
     user = await User.findOne({});
 
-
-
-
     //Blackboard
     //DELETE OLD
     await Comment.deleteMany({})
@@ -128,19 +125,21 @@ const seedDb = async () => {
     let text = "### Die Turnier AG spielt gerne turniere";
     const wikiArticle1 = new Wiki.WikiArticle({
         title: "Turnier AG", text: text,
-        textAsHtml: md.render(text)
+        textAsHtml: md.render(text),
+        author: user.id
     });
     text = "Die Schlefaz AG guckt Filme.";
-    const wikiArticle2 = new Wiki.WikiArticle({ title: "Schlefaz AG", text: text, textAsHtml: md.render(text) });
+    const wikiArticle2 = new Wiki.WikiArticle({author: user.id, title: "Schlefaz AG", text: text, textAsHtml: md.render(text) });
     await wikiArticle1.save();
     await wikiArticle2.save();
     const wikiCategory = new Wiki.WikiCategory({
         name: "AGs",
-        modifiable: false,
+        modifiable: true,
         articles: [wikiArticle1._id, wikiArticle2._id
         ],
     })
     await wikiCategory.save()
+
 }
 
 seedDb().then(() => {
