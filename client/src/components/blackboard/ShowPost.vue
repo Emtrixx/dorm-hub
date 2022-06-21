@@ -7,7 +7,12 @@
                 <h1>{{ post.title }}</h1>
                 <p>by <strong>{{ post.author.firstName }} {{ post.author.lastName }}</strong></p>
                 <p>{{ post.text }}</p>
-                <img src="http:\\localhost:8081\blackboard/post-images/elena5.png" class="img-fluid">
+                <div class="d-flex">
+                    <div v-for="image_file in post.images" :key="image_file">
+                        <img v-bind:src="url+'blackboard/post-images/' + image_file"
+                            class="img-fluid">
+                    </div>
+                </div>
             </base-card>
             <hr>
             <comment-form @save-data="createComment"></comment-form>
@@ -40,6 +45,7 @@ export default {
         currentUserId() {
             return this.$store.getters["userId"];
         },
+        url() { return process.env.VUE_APP_HOST || "http://localhost:8081/"; }
 
     },
     created() {

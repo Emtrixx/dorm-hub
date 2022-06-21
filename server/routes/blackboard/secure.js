@@ -4,7 +4,9 @@ const auth = require('../../utils/auth')
 const Hub = require('../../models/hub')
 const Post = require('../../models/post')
 const Comment = require('../../models/comment')
-
+const sharp = require('sharp');
+const fs = require("fs")
+const { v4: uuidv4 } = require('uuid');
 let images_folder = "./post-images/"
 
 router.get(
@@ -26,25 +28,30 @@ router.post('/upload-images', async (req, res) => {
         message: 'No file uploaded'
       });
     } else {
-      let postId = req.files.postId
-      console.log(postId)
-      for (var pair of req.files.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-      }
-      delete req.files.postId
-      Object.keys(req.files).forEach(filename => {
+      let postId = req.body.postId
+      const post = await Post.findOne({ "_id": postId })
+      await Object.keys(req.files).forEach(async (filename) => {
         let file = req.files[filename]
+        let unique_filename = uuidv4()
         //save image to images_folder
-        file.mv(images_folder + file.name);
+        //file.mv(images_folder + file.name);
+        sharp(file.data)
+          .resize(300)
+          //format to jpg
+          .toFile(images_folder + unique_filename + ".jpg")
+          .catch((err) => {
+            console.log("error resizing image");
+            console.log(err)
+          });
         // save image name to post
-        const post = Post.findOne({ "_id": postId })
-        post.images.push(filename)
-
-        post.save()
+        post.images.unshift(unique_filename + ".jpg")
       })
+      await post.save()
       res.send("Ok");
     }
   } catch (err) {
+    console.log(err)
+    console.log("error")
     res.status(500).send(err);
   }
 });
@@ -61,11 +68,13 @@ router.post('/:hub/:postId', async (req, res) => {
 })
 
 router.post('/setPost', async (req, res) => {
+  console.log(req.body._id)
   const post = await Post.findOne({ "_id": req.body._id });
   post.text = req.body.text;
   post.title = req.body.title;
-  await post.save();
-  res.send("ok");
+  post.author = req.body.author;
+  let result = await post.save();
+  res.send(result);
 })
 
 //get id of new, empty post
@@ -110,6 +119,14 @@ router.delete('/:hub/:postId', async (req, res) => {
       posts: [{ _id: postId }]
     }
   })
+  let post = await Post.findOne({ _id: postId })
+  for (let i = 0; i < post.images.length; i++) {
+    let image_filename = post.images[i]
+    fs.unlink(images_folder + image_filename, (err) => {
+      if (err) throw err;
+      console.log('path/file.txt was deleted');
+    })
+  }
   await Post.deleteOne({ _id: postId })
   res.send("ok")
 })

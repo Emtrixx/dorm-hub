@@ -51,14 +51,16 @@ export default {
       }
       );
       let postId = await res.json()
-      console.log("postID " + postId)
-      this.images.append("postId", postId)
+
+      let data = this.images
+      //postId is there and in data object
+      data.append("postId", postId)
       await fetch(url + 'blackboard-secure/upload-images', {
         headers: {
           'Authorization': "Bearer " + localStorage.getItem('token')
         },
         method: 'POST',
-        body: this.images
+        body: data
       })
 
       let formData = {
@@ -71,6 +73,7 @@ export default {
         formData = {
           ...formData,
           author: this.$store.getters.userId,
+          _id: postId
         };
       }
 
