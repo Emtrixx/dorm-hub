@@ -3,7 +3,7 @@
         <div>
             <!-- <h3>TOP Hubs</h3> -->
             <!-- TODO if user is logged in:  -->
-            <div class="btn-group my-3">
+            <div class="btn-group my-3 flex-wrap">
                 <router-link class="btn btn-primary" to="/blackboard/all">All</router-link>
                 <router-link class="btn btn-primary" to="/blackboard/general/index">General</router-link>
                 <router-link class="btn btn-primary" to="/blackboard/foodsharing/index">Foodsharing</router-link>
