@@ -58,7 +58,7 @@ app.use('/news', newsRoutes)
 app.use('/news', auth.requireJWT, newsSecureRoutes)
 
 app.use('/wiki', wikiRoutes)
-app.use('/wiki', auth.requireJWT,wikiSecureRoutes)
+app.use('/wiki-secure', auth.requireJWT,wikiSecureRoutes)
 
 //error handler. Sends error as json
 app.use(function(err, req, res, next) {

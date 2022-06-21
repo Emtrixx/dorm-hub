@@ -3,11 +3,15 @@ const router = express.Router();
 const Wiki = require('../../models/wiki')
 const mongoose = require('mongoose')
 var MarkdownIt = require('markdown-it'),
-md = new MarkdownIt();
+    md = new MarkdownIt();
 
 
 router.get('/all', async (req, res) => {
-    const categoriesList = await Wiki.WikiCategory.find().populate('articles');
+    const categoriesList = await Wiki.WikiCategory.find().populate('articles')
+        .populate({ path: "articles", populate: {
+            path: "author",
+            model: "User"
+        } });
     res.send(JSON.stringify(categoriesList))
 })
 
@@ -34,7 +38,7 @@ router.post('/removeCategory', async (req, res) => {
     res.send("It worked!");
 })
 
-router.post('/renameCategory', async(req,res) => {
+router.post('/renameCategory', async (req, res) => {
     let categoryId = req.body.categoryId;
     let newName = req.body.newName;
     let categoryJson = await Wiki.WikiCategory.findOne({ "_id": categoryId });
@@ -45,10 +49,10 @@ router.post('/renameCategory', async(req,res) => {
 
 
 
-router.get('/getArticle', async(req,res) => {
+router.get('/getArticle', async (req, res) => {
     let articleId = req.query.id;
-    console.log("articleId: "+articleId);
-    let article = await Wiki.WikiArticle.find({ "_id": mongoose.Types.ObjectId(articleId) });
+    console.log("articleId: " + articleId);
+    let article = await Wiki.WikiArticle.find({ "_id": mongoose.Types.ObjectId(articleId) }).populate("author");
     res.send(JSON.stringify(article));
 })
 
