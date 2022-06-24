@@ -1,5 +1,5 @@
 <template>
-    <div class="col col-md-12 col-lg-3">
+    <div >
         <base-card @click="postLink" class="card">
             <h4>{{ title }}</h4>
             <p><i>hub/{{ id }}</i></p>

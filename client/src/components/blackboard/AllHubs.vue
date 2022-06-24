@@ -4,6 +4,7 @@
     <p v-if="loading">Loading</p>
     <div v-else>
       <div class="row">
+        <div class="col col-md-12 col-lg-3"></div>
         <post-item v-for="post in posts" :post="post" :key="post._id" :id="post.hub.name"></post-item>
       </div>
       

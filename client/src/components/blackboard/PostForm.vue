@@ -14,7 +14,6 @@
         <input class="form-control" @change="updateImages($event)" type="file" multiple="true"
           accept="image/png, image/gif, image/jpeg">
       </div>
-
       <button class="btn btn-success">Submit</button>
     </form>
   </base-card>

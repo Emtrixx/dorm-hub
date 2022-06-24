@@ -82,14 +82,6 @@ const seedDb = async () => {
     })
     await general.save()
 
-    const flea_market = new Hub({
-        name: 'flea-market',
-        admins: [user.id],
-        members: [user.id],
-        posts: []
-    })
-    await flea_market.save()
-
     const heimrat = new Hub({
         name: 'heimrat',
         admins: [user.id],
@@ -129,7 +121,7 @@ const seedDb = async () => {
         author: user.id
     });
     text = "Die Schlefaz AG guckt Filme.";
-    const wikiArticle2 = new Wiki.WikiArticle({author: user.id, title: "Schlefaz AG", text: text, textAsHtml: md.render(text) });
+    const wikiArticle2 = new Wiki.WikiArticle({ author: user.id, title: "Schlefaz AG", text: text, textAsHtml: md.render(text) });
     await wikiArticle1.save();
     await wikiArticle2.save();
     const wikiCategory = new Wiki.WikiCategory({

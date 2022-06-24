@@ -2,7 +2,7 @@
     
     <base-card @click="postLink" class="card">
     <h4>{{ title }}</h4>
-    <p><strong>{{ `${author.firstName} ${author.lastName}` }}</strong></p>
+    <p><strong>{{ `by ${author.firstName} ${author.lastName}` }}</strong></p>
     <p>{{ text }}</p>
     </base-card>
     
