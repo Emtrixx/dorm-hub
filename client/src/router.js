@@ -20,6 +20,7 @@ import Calendar from './pages/Calendar.vue'
 import Impressum from './pages/Impressum.vue'
 import Privacy from './pages/Privacy.vue'
 import NotFound from './pages/NotFound.vue'
+import MyHubs from './components/blackboard/MyHubs.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -28,6 +29,7 @@ const router = createRouter({
         {
             path: '/blackboard', component: Blackboard, children: [
                 { path: 'all', component: AllHubs},
+                {path: 'my-hubs', component: MyHubs},
                 { path: ':id', component: Hub, props: true, children: [
                     { path: 'index', component: ShowAll, props: true }, 
                     { path: ':postId', component: ShowPost, props: true},

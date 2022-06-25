@@ -82,6 +82,14 @@ const seedDb = async () => {
     })
     await general.save()
 
+    const flea_market = new Hub({
+        name: 'flea-market',
+        admins: [user.id],
+        members: [user.id],
+        posts: []
+    })
+    await flea_market.save()
+
     const heimrat = new Hub({
         name: 'heimrat',
         admins: [user.id],

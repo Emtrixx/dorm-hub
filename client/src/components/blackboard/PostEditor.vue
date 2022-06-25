@@ -53,7 +53,7 @@ export default {
             this.post.title = this.title;
             this.post.text = this.text;
             let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
-            await fetch(url + 'blackboard/setPost', {
+            await fetch(url + 'blackboard-secure/setPost', {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': "Bearer " + localStorage.getItem('token')
@@ -64,7 +64,7 @@ export default {
         },
         async deletePost() {
             let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
-            await fetch(url + 'blackboard/'+this.hubId + "/" + this.post._id, {
+            await fetch(url + 'blackboard-secure/'+this.hubId + "/" + this.post._id, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': "Bearer " + localStorage.getItem('token')
