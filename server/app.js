@@ -7,7 +7,17 @@ const app = express()
 const mongoose = require('mongoose')
 const cors = require('cors')
 const auth = require('./utils/auth')
+const fileUpload = require('express-fileupload');
 
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const _ = require('lodash');
+
+app.use(express.static('post-images'));
+// enable files upload
+app.use(fileUpload({
+    createParentPath: true
+}));
 //enables cross origin resources
 app.use(cors())
 //makes json and urlencoded response data usable
@@ -43,6 +53,7 @@ const newsRoutes = require('./routes/news/index')
 const newsSecureRoutes = require('./routes/news/secure');
 
 const wikiRoutes = require('./routes/wiki/index')
+const wikiSecureRoutes = require('./routes/wiki/secure')
 
 // Routing
 // Secure routes use auth middleware before routing
@@ -50,14 +61,15 @@ app.use('/', generalRoutes)
 
 app.use('/auth', authRoutes)
 
+app.use('/blackboard-secure', auth.requireJWT, blackboardSecureRoutes)
 app.use('/blackboard', blackboardRoutes)
-app.use('/blackboard', auth.requireJWT, blackboardSecureRoutes)
+
 
 app.use('/news', newsRoutes)
 app.use('/news', auth.requireJWT, newsSecureRoutes)
 
 app.use('/wiki', wikiRoutes)
-
+app.use('/wiki-secure', auth.requireJWT,wikiSecureRoutes)
 
 //error handler. Sends error as json
 app.use(function(err, req, res, next) {
