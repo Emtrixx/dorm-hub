@@ -38,7 +38,6 @@ export default {
     },
     hubId() {
       this.fetchData();
-      this.$router.params;
       return this.id;
     },
     id() {

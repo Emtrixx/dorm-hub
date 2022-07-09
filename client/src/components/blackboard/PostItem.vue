@@ -1,37 +1,50 @@
 <template>
-    <div class="col col-md-12 col-lg-3">
-        <base-card @click="postLink" class="card">
-            <h4>{{ title }}</h4>
-            <p><i>hub/{{ id }}</i></p>
-            <p>{{ text.slice(0,100) + (text.length > 100? "...": "" )}}</p>
-            <p style="color:grey; font-size: 10px;">{{created_at.toDateString()}}</p>   
-        </base-card>
-    </div>
+  <div class="col col-md-12 col-lg-4">
+    <base-card @click="postLink" class="card">
+      <h4>{{ title.slice(0, 15) + (title.length > 15 ? "..." : "") }}</h4>
+      <p>
+        <em>hub/{{ id }}</em>
+      </p>
+      <p>{{ text.slice(0, 200) + (text.length > 200 ? "..." : "") }}</p>
+      <p style="color:grey; font-size: 10px;">
+        {{ created_at.toDateString() }}
+      </p>
+    </base-card>
+  </div>
 </template>
 
 <script>
+import { computed, toRefs  } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 export default {
-    props: ['id', 'post'],
-    data() {
-        return {
-            postId: this.post._id,
-            author: this.post.author,
-            title: this.post.title,
-            text: this.post.text,
-            created_at: new Date(this.post.createdAt)
-        };
+    props: {
+        id: String,
+        post: Object,
     },
-    computed: {
-        currentUserId() {
-            return this.$store.getters["userId"];
-        },
-        isAuthenticated() {
-            return this.$store.getters['isAuthenticated']
+    setup(props) {
+        const store = useStore();
+        const router = useRouter();
+        const { post } = toRefs(props);
+        const { _id, author, title, text, createdAt } = toRefs(post.value);
+        const currentUserId = computed(() => {
+            return store.getters.userId;
+        });
+        const isAuthenticated = computed(() => {
+            return store.getters.isAuthenticated;
+        });
+        function postLink() {
+            router.push('/blackboard/' + props.id + '/' + _id.value);
         }
-    },
-    methods: {
-        postLink() {
-            this.$router.push('/blackboard/' + this.id + '/' + this.postId);
+        return {
+            postId: _id,
+            author: author,
+            title: title,
+            text: text,
+            created_at: new Date(createdAt.value),
+            currentUserId,
+            isAuthenticated,
+            postLink
         }
     }
 }
@@ -45,8 +58,8 @@ export default {
 } */
 
 .card:hover {
-    cursor: pointer;
-    transform: scale(1.01);
-    transition: 200ms all ease;
+  cursor: pointer;
+  transform: scale(1.01);
+  transition: 200ms all ease;
 }
 </style>

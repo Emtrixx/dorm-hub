@@ -3,7 +3,6 @@
 
     <news-widget class="col-md-10"></news-widget>
 
-
     <blackboard-widget class="col-md-10"></blackboard-widget>
 
     <wiki-widget class="col-md-10"></wiki-widget>
