@@ -28,11 +28,11 @@ const router = createRouter({
         { path: '/', component: Home },
         {
             path: '/blackboard', component: Blackboard, children: [
-                { path: 'all', component: AllHubs},
-                {path: 'my-hubs', component: MyHubs},
+                { path: 'all', component: AllHubs },
+                { path: 'my-hubs', component: MyHubs },
                 { path: ':id', component: Hub, props: true, children: [
                     { path: 'index', component: ShowAll, props: true }, 
-                    { path: ':postId', component: ShowPost, props: true},
+                    { path: ':postId', component: ShowPost, props: true },
                 ]}
             ]
         },

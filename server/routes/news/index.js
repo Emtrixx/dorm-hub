@@ -18,8 +18,4 @@ router.get('/:newsId', async (req,res)=> {
     res.send(JSON.stringify(newsItem))
 })
 
-router.post('/', (req, res) => {
-
-})
-
 module.exports = router;
