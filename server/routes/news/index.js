@@ -4,7 +4,7 @@ const auth = require('../../utils/auth')
 
 const News = require('../../models/news')
 
-router.get('/all', async (req,res) => {
+router.get('/all', async (_,res) => {
     console.log("getting all news")
     const newsList = await News.find().populate('author')
     console.log("get all news")

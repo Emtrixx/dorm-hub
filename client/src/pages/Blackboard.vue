@@ -1,7 +1,6 @@
 <template>
     <div>
         <div>
-            <!-- <h3>TOP Hubs</h3> -->
             <!-- TODO if user is logged in:  -->
             <div class="btn-group my-3 flex-wrap">
                 <router-link class="btn btn-primary" to="/blackboard/all">All</router-link>
