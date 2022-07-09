@@ -1,6 +1,9 @@
 <template>
   <div class="">
     <p v-if="loading">loading...</p>
+    <p v-else-if="posts.length < 1">
+      None found.
+    </p>
     <div class="" v-else>
       <button class="btn btn-success" @click="toggleForm" v-if="isAuthenticated">Create Post</button>
       <post-form :hub="id.toString()" v-if="showForm" @save-data="createPost"></post-form>
@@ -38,7 +41,6 @@ export default {
     },
     hubId() {
       this.fetchData();
-      this.$router.params;
       return this.id;
     },
     id() {

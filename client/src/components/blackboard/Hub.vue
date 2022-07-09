@@ -9,6 +9,4 @@
 export default {
   props: ["id"],
 };
-
-
 </script>

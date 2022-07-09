@@ -25,7 +25,6 @@ export default {
         }
 
         const expiresIn = +resData.expiresIn
-        // const expiresIn = 20000
         const expirationDate = Date.now() + expiresIn
 
         localStorage.setItem('token', resData.token)

@@ -25,8 +25,8 @@ export default {
   props: ['hub'],
   data() {
     return {
-      title: "adfsfasdfasdf",
-      text: "asdfasdfsadfadsf",
+      title: "",
+      text: "",
       images: new FormData()
     };
   },
