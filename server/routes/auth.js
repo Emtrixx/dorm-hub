@@ -3,16 +3,16 @@ const router = express.Router();
 const auth = require('../utils/auth')
 
 //Register
-router.post(
-    '/register',
-    // middleware that handles the registration process
-    auth.register,
-    // json handler
-    auth.signJWTForUser,
-    (req,res) => {
-        console.log(req.body)
-    }
-)
+// router.post(
+//     '/register',
+//     // middleware that handles the registration process
+//     auth.register,
+//     // json handler
+//     auth.signJWTForUser,
+//     (req,res) => {
+//         console.log(req.body)
+//     }
+// )
   
 // Sign in
 router.post(

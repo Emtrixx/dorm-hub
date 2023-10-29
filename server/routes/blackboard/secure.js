@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../../utils/auth')
 const Hub = require('../../models/hub')
 const Post = require('../../models/post')
 const Comment = require('../../models/comment')
@@ -30,7 +29,7 @@ router.post('/upload-images', async (req, res) => {
     } else {
       let postId = req.body.postId
       const post = await Post.findOne({ "_id": postId })
-      await Object.keys(req.files).forEach(async (filename) => {
+      await Object.keys(req.files).forEach((filename) => {
         let file = req.files[filename]
         let unique_filename = uuidv4()
         //save image to images_folder
