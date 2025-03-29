@@ -31,7 +31,7 @@
     "passport-local-mongoose": "^6.1.0",
     "path": "^0.12.7",
     "serve": "^13.0.2",
-    "sharp": "^0.30.6",
+    "sharp": "^0.33.0",
     "uuid": "^8.3.2",
     "vue": "^3.2.33"
   }
