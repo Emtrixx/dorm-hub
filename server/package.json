@@ -11,7 +11,7 @@
   "author": "Jesse Günzl",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.0.1",
+    "bcrypt": "^6.0.0",
     "body-parser": "^1.20.0",
     "bootstrap-icons": "^1.8.1",
     "cors": "^2.8.5",
@@ -20,7 +20,7 @@
     "express-fileupload": "^1.4.0",
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "markdown-it": "^13.0.1",
     "markdown-to-html": "^0.0.13",
     "mongoose": "^5.13.14",
