@@ -64,7 +64,7 @@ export default {
       this.editingCategoryName = categoryName;
     },
     async renameCategory(categoryName, categoryId) {
-      let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
       this.renamingCategory = false;
       await fetch(url + "wiki/renameCategory", {
         method: "post",
@@ -76,7 +76,7 @@ export default {
     },
     async removeCategory(category) {
       if (confirm("Do you want to delete " + category + "?")) {
-        let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+        let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
         let res = await fetch(url + "wiki/removeCategory", {
           method: "post",
           headers: { "Content-Type": "application/json" },
@@ -91,7 +91,7 @@ export default {
     async removeArticle(article) {
       console.log(article);
       if (confirm("Do you want to delete " + article.title + "?")) {
-        let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+        let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
         await fetch(url + "wiki/removeArticle", {
           method: "post",
           headers: { "Content-Type": "application/json" },

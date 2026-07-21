@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     async setArticleToCategory(article, categoryID) {
-      let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
       await fetch(url + "wiki/secure/setArticleToCategory", {
         method: "post",
         headers: {

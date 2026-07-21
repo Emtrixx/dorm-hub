@@ -8,7 +8,7 @@ export default {
         return context.dispatch('auth', { body: payload, mode: 'login'})
     },
     async auth(context, payload) {
-        let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+        let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
         const res = await fetch(`${url}auth/${payload.mode}`, {
             headers: {
                 'Content-Type': 'application/json'

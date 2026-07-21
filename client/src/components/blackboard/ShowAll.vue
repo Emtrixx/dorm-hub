@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import PostForm from "./PostForm";
-import PostItem from "./PostItem";
+import PostForm from "./PostForm.vue";
+import PostItem from "./PostItem.vue";
 export default {
   components: {
     PostForm,

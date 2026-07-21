@@ -64,7 +64,7 @@ export default {
       return this.$store.getters["userId"];
     },
     url() {
-      return process.env.VUE_APP_HOST || "http://localhost:8081/";
+      return import.meta.env.VITE_HOST || "http://localhost:8081/";
     },
   },
   created() {
@@ -84,7 +84,7 @@ export default {
         postId: this.postId,
         data,
       };
-      let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
       const res = await fetch(
         url + "blackboard/secure/" + payload.hubId + "/" + payload.postId,
         {

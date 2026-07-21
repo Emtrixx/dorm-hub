@@ -1,6 +1,6 @@
 export default {
     async fetchNewsItem(context,payload) {
-        const res = await fetch(process.env.VUE_APP_HOST + `news/${payload.newsId}`)
+        const res = await fetch(import.meta.env.VITE_HOST + `news/${payload.newsId}`)
         const resData = await res.json()
         
         console.log(resData)

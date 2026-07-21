@@ -1,1 +1,0 @@
-global.url = process.env.VUE_APP_HOST || "http://localhost:8081/";

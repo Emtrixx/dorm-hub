@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import Home from './pages/Home.vue'
 
-import Blackboard from './pages/Blackboard'
+import Blackboard from './pages/Blackboard.vue'
 import Hub from './components/blackboard/Hub.vue'
 import AllHubs from './components/blackboard/AllHubs.vue'
 import ShowAll from './components/blackboard/ShowAll.vue'

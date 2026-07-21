@@ -72,7 +72,7 @@ export default {
     },
     async fetchData() {
       console.log("fetch data")
-      let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
       const res = await fetch(url + "wiki/all");
       const resData = await res.json();
       if (!res.ok) {
@@ -96,13 +96,13 @@ export default {
           selectedCategory["articles"][this.selectedArticleIndex.articleIdx];
         console.log("article idx " + this.selectedArticleIndex.articleIdx)
         console.log("selected article " + JSON.stringify(this.selectedArticle))
-      } catch (e) {
+      } catch {
         console.log("article " + this.selectedArticleIndex.articleIdx);
         console.log("category " + this.currentCategoryId);
       }
     },
     async addCategory(category) {
-      let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
       await fetch(url + "wiki/addCategory", {
         method: "post",
         headers: { "Content-Type": "application/json" },

@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 dorm-hub is a pnpm-workspace monorepo: a Vue 3 SPA in `client/` (package name `dorm-hub`) and an Express/MongoDB REST API in `server/` (package name `dorm-hub-api`). Run `pnpm install` once at the repo root — it installs both packages. Node 24+ (see `.nvmrc`), pnpm 11+. Packages with install scripts must be approved in `pnpm-workspace.yaml` (`allowBuilds`).
 
-A modernization effort is in progress (see git history). Done so far: pnpm workspace, Node 24 pin, dependency purge + security upgrades (jsonwebtoken 9, passport 0.7, sharp 0.34, Mongoose 8, Express 5, passport-local-mongoose 8), JWT secret/port moved to env vars, route prefixes normalized to `/<domain>/secure`, server test suite (Vitest + supertest + mongodb-memory-server), Docker rework, CI. Still planned: Vue CLI→Vite, Jest→Vitest, ESLint 9, Cypress upgrade, Vuex→Pinia.
+A modernization effort is in progress (see git history). Done so far: pnpm workspace, Node 24 pin, dependency purge + security upgrades (jsonwebtoken 9, passport 0.7, sharp 0.34, Mongoose 8, Express 5, passport-local-mongoose 8), JWT secret/port moved to env vars, route prefixes normalized to `/<domain>/secure`, server test suite (Vitest + supertest + mongodb-memory-server), Docker rework, CI, and the client toolchain (Vite 7, Vitest, ESLint 9 flat config, Cypress 14). Zero `pnpm audit` findings across prod and dev. Still planned: Vuex→Pinia, `<script setup>` standardization, central API client, optional TypeScript.
 
 ## Commands
 
@@ -21,13 +21,13 @@ All commands can be run from the repo root via pnpm filters, or inside the packa
 - `pnpm --filter dorm-hub-api test` — Vitest + supertest API tests (`tests/app.test.js`) against an in-memory MongoDB; no local mongo needed. In tests, get models via `mongoose.model('Name')` instead of importing model files (double registration through vitest's module graph).
 
 ### Client (`client/`)
-- Copy `client/.env.dev` to `client/.env` first so the client knows the backend URL (`VUE_APP_HOST`)
-- `pnpm dev:client` (root) or `pnpm serve` (in `client/`) — dev server on port 8082
-- `pnpm --filter dorm-hub build` — production build
-- `pnpm lint` (root) — ESLint via vue-cli-service
-- `pnpm test:unit` (root) — Jest unit tests (in `tests/unit/*.spec.js`)
-- `pnpm --filter dorm-hub test:unit -- base-card.spec.js` — run a single unit test file
-- `pnpm --filter dorm-hub test:e2e` — Cypress e2e tests (in `tests/e2e/specs/`)
+- Copy `client/.env.dev` to `client/.env` first so the client knows the backend URL (`VITE_HOST`, must end with a trailing slash — call sites concatenate paths directly)
+- `pnpm dev:client` (root) or `pnpm serve` (in `client/`) — Vite dev server on port 8082
+- `pnpm --filter dorm-hub build` — production build (Vite)
+- `pnpm lint` (root) — ESLint 9 flat config (`eslint.config.mjs`); `vue/multi-word-component-names` is off for the existing single-word pages
+- `pnpm test:unit` (root) — Vitest unit tests (in `tests/unit/*.spec.js`, jsdom, globals enabled)
+- `pnpm --filter dorm-hub test:unit base-card.spec.js` — run a single unit test file
+- `pnpm --filter dorm-hub test:e2e` — starts the dev server, then runs Cypress headless (`test:e2e:open` for the GUI); needs the API + seeded DB running
 
 ### Docker
 - Copy `.env.example` to `.env` at the repo root and set `JWT_SECRET` (compose fails fast without it)
@@ -47,8 +47,8 @@ All commands can be run from the repo root via pnpm filters, or inside the packa
 - Uploaded post images are stored on disk in `post-images/` and served statically from the app root; uploads go through `express-fileupload` and are processed with `sharp` (filenames via `node:crypto` `randomUUID`).
 
 ### Client
-- Vue 3 with Options and Composition API mixed; Bootstrap 5 for styling. Still on Vue CLI 4/webpack 4 — `vue.config.js` lists `transpileDependencies` because webpack 4 can't parse modern syntax in dependency dist files; this goes away with the planned Vite migration.
+- Vue 3 with Options and Composition API mixed; Bootstrap 5 for styling (CSS from npm in `main.js`, JS bundle + icons from CDN in `index.html`). Vite 7 (`vite.config.mjs`, which also holds the Vitest config); `index.html` lives at the client root. Imports of `.vue` files must include the extension — Vite does not resolve extensionless `.vue` imports.
 - State: Vuex 4 with one module per domain (`store/auth`, `store/blackboard`, `store/news`, `store/wiki`), each split into `index.js`/`actions.js`/`mutations.js`/`getters.js`. API calls happen in the actions via `fetch`.
 - Routing: `src/router.js`. The blackboard section uses nested routes (`/blackboard/:id/:postId`) with `props: true`.
-- The backend base URL is read from `VUE_APP_HOST` via `src/globals.js` (`global.url`), defaulting to `http://localhost:8081/`. Env vars are injected through `dotenv-webpack` (see `vue.config.js`), so changing `.env` requires a dev-server restart. Note: the Docker client build has no `.env`, so it bakes in the localhost default.
+- The backend base URL is read from `import.meta.env.VITE_HOST`, defaulting to `http://localhost:8081/` — read inline at every call site (a central API client is planned). Note: the Docker client build has no `.env`, so it bakes in the localhost default.
 - Domain components live in `src/components/<domain>/`, shared UI in `src/components/UI/`, route-level pages in `src/pages/`.

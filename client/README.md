@@ -25,4 +25,4 @@ pnpm test:e2e
 ```
 
 ### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+See `vite.config.mjs` and the [Vite Configuration Reference](https://vite.dev/config/).

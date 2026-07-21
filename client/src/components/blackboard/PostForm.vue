@@ -41,7 +41,7 @@ export default {
       this.images = data
     },
     async submitForm() {
-      let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
       //get post id
       let res = await fetch(url + 'blackboard/secure/new-post-id/' + this.hub, {
         headers: {

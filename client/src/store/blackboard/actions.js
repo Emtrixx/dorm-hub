@@ -1,6 +1,6 @@
 export default {
     async fetchHub(context, payload) {
-        let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+        let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
         const res = await fetch(url + 'blackboard/'+payload.hub)
         const resData = await res.json();
 
@@ -13,7 +13,7 @@ export default {
         context.commit('fetchHub', {hub: resData})
     },
     async fetchPost(context,payload) {
-        let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+        let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
         const res = await fetch(url + `blackboard/${payload.hub}/${payload.postId}`)
         const resData = await res.json()
 
@@ -27,7 +27,7 @@ export default {
         context.commit('fetchPost', {post: resData})
     },
     async createPost(context, payload) {
-        let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+        let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
         const res = await fetch(url + 'blackboard/secure/setPost', {
             headers: {
                 'Content-Type': 'application/json',

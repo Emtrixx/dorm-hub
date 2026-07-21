@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     async fetchLatestPosts() {
-      let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
+      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
       const res = await fetch(url + "blackboard/latestPosts?count=3");
       const resData = await res.json();
       if (!res.ok) {
