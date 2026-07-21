@@ -1,0 +1,303 @@
+/*
+ * dorm-hub theme — "the hallway noticeboard, redrawn"
+ * Ink blue-slate structure, paper background, sticky-note yellow accent.
+ * Loaded after Bootstrap; overrides its CSS variables and components.
+ */
+
+:root {
+  --dh-ink: #25313c;
+  --dh-ink-soft: #3a4a58;
+  --dh-paper: #f4f5f3;
+  --dh-card: #ffffff;
+  --dh-note: #ffd84d;
+  --dh-note-soft: #ffe58a;
+  --dh-moss: #4c8259;
+  --dh-brick: #c4513f;
+  --dh-mist: #66737e;
+  --dh-line: #dfe2dd;
+
+  --dh-radius: 0.75rem;
+  --dh-radius-sm: 0.5rem;
+  --dh-shadow: 0 1px 2px rgba(37, 49, 60, 0.06), 0 6px 16px -8px rgba(37, 49, 60, 0.14);
+  --dh-shadow-lift: 0 2px 4px rgba(37, 49, 60, 0.08), 0 14px 28px -12px rgba(37, 49, 60, 0.22);
+
+  --dh-font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", sans-serif;
+  --dh-font-body: "Instrument Sans Variable", "Instrument Sans", system-ui, sans-serif;
+
+  /* Bootstrap remaps */
+  --bs-body-font-family: var(--dh-font-body);
+  --bs-body-bg: var(--dh-paper);
+  --bs-body-color: var(--dh-ink);
+  --bs-link-color: var(--dh-ink);
+  --bs-link-hover-color: var(--dh-ink-soft);
+  --bs-border-radius: var(--dh-radius-sm);
+}
+
+body {
+  background-color: var(--dh-paper);
+  color: var(--dh-ink);
+  font-family: var(--dh-font-body);
+  /* faint pin-grid, like grid paper on the board */
+  background-image: radial-gradient(rgba(37, 49, 60, 0.055) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+h1, h2, h3, h4, h5, .dh-display {
+  font-family: var(--dh-font-display);
+  font-weight: 640;
+  letter-spacing: -0.015em;
+  color: var(--dh-ink);
+}
+
+a {
+  color: var(--dh-ink);
+  text-decoration-color: rgba(37, 49, 60, 0.35);
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--dh-ink-soft);
+}
+
+hr {
+  border-color: var(--dh-line);
+  opacity: 1;
+}
+
+::selection {
+  background: var(--dh-note);
+  color: var(--dh-ink);
+}
+
+/* ---------- page furniture ---------- */
+
+.dh-page-head {
+  margin: 2rem 0 1.5rem;
+}
+
+.dh-eyebrow {
+  display: block;
+  font-family: var(--dh-font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dh-mist);
+  margin-bottom: 0.35rem;
+}
+
+.dh-page-head h1 {
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  margin-bottom: 0;
+}
+
+.dh-section-title {
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.dh-section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--dh-line);
+}
+
+/* the sticky chip — used by the wordmark and small highlights */
+.dh-chip {
+  display: inline-block;
+  background: var(--dh-note);
+  color: var(--dh-ink);
+  border-radius: 0.3em;
+  padding: 0.05em 0.35em;
+  transform: rotate(-2deg);
+  box-shadow: 0 2px 4px rgba(37, 49, 60, 0.18);
+}
+
+/* ---------- cards ---------- */
+
+.dh-card {
+  background: var(--dh-card);
+  border: 1px solid var(--dh-line);
+  border-radius: var(--dh-radius);
+  box-shadow: var(--dh-shadow);
+}
+
+.dh-card-hover {
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+
+.dh-card-hover:hover {
+  cursor: pointer;
+  transform: translateY(-2px);
+  box-shadow: var(--dh-shadow-lift);
+}
+
+/* the one skeuomorphic wink: a strip of tape on pinboard cards */
+.dh-taped {
+  position: relative;
+}
+
+.dh-taped::before {
+  content: "";
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 74px;
+  height: 20px;
+  transform: translateX(-50%) rotate(-2deg);
+  background: rgba(255, 216, 77, 0.45);
+  border-left: 1px dashed rgba(37, 49, 60, 0.12);
+  border-right: 1px dashed rgba(37, 49, 60, 0.12);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dh-card-hover,
+  .dh-card-hover:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* ---------- buttons ---------- */
+
+.btn {
+  --bs-btn-border-radius: var(--dh-radius-sm);
+  font-weight: 600;
+}
+
+.btn-primary,
+.btn-dark,
+.btn-success {
+  --bs-btn-bg: var(--dh-ink);
+  --bs-btn-border-color: var(--dh-ink);
+  --bs-btn-hover-bg: var(--dh-ink-soft);
+  --bs-btn-hover-border-color: var(--dh-ink-soft);
+  --bs-btn-active-bg: var(--dh-ink-soft);
+  --bs-btn-active-border-color: var(--dh-ink-soft);
+  --bs-btn-color: #fff;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-color: #fff;
+}
+
+.btn-success {
+  --bs-btn-bg: var(--dh-moss);
+  --bs-btn-border-color: var(--dh-moss);
+  --bs-btn-hover-bg: #40704c;
+  --bs-btn-hover-border-color: #40704c;
+  --bs-btn-active-bg: #40704c;
+  --bs-btn-active-border-color: #40704c;
+}
+
+.btn-warning {
+  --bs-btn-bg: var(--dh-note);
+  --bs-btn-border-color: var(--dh-note);
+  --bs-btn-hover-bg: var(--dh-note-soft);
+  --bs-btn-hover-border-color: var(--dh-note-soft);
+  --bs-btn-active-bg: var(--dh-note-soft);
+  --bs-btn-active-border-color: var(--dh-note-soft);
+  --bs-btn-color: var(--dh-ink);
+  --bs-btn-hover-color: var(--dh-ink);
+  --bs-btn-active-color: var(--dh-ink);
+}
+
+.btn-danger,
+.btn-outline-danger {
+  --bs-btn-bg: var(--dh-brick);
+  --bs-btn-border-color: var(--dh-brick);
+  --bs-btn-hover-bg: #a94334;
+  --bs-btn-hover-border-color: #a94334;
+  --bs-btn-active-bg: #a94334;
+  --bs-btn-active-border-color: #a94334;
+}
+
+.btn-outline-danger {
+  --bs-btn-bg: transparent;
+  --bs-btn-color: var(--dh-brick);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #a94334;
+}
+
+.btn-outline-primary,
+.btn-outline-dark,
+.btn-outline-secondary {
+  --bs-btn-color: var(--dh-ink);
+  --bs-btn-border-color: rgba(37, 49, 60, 0.35);
+  --bs-btn-hover-bg: var(--dh-ink);
+  --bs-btn-hover-border-color: var(--dh-ink);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: var(--dh-ink);
+  --bs-btn-active-border-color: var(--dh-ink);
+  --bs-btn-active-color: #fff;
+}
+
+.btn:focus-visible {
+  box-shadow: 0 0 0 0.2rem rgba(255, 216, 77, 0.65);
+}
+
+/* pill-style pinboard hub switcher (replaces the welded btn-group look) */
+.dh-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.dh-pills .btn {
+  border-radius: 999px;
+  padding: 0.3rem 0.95rem;
+  background: var(--dh-card);
+  border: 1px solid var(--dh-line);
+  color: var(--dh-ink);
+}
+
+.dh-pills .btn:hover {
+  border-color: var(--dh-ink);
+  background: var(--dh-card);
+  color: var(--dh-ink);
+}
+
+.dh-pills .btn.active,
+.dh-pills .router-link-active {
+  background: var(--dh-ink);
+  border-color: var(--dh-ink);
+  color: #fff;
+}
+
+/* ---------- forms ---------- */
+
+.form-control {
+  border-color: var(--dh-line);
+  border-radius: var(--dh-radius-sm);
+  background-color: var(--dh-card);
+  color: var(--dh-ink);
+}
+
+.form-control:focus {
+  border-color: var(--dh-ink);
+  box-shadow: 0 0 0 0.2rem rgba(255, 216, 77, 0.5);
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ---------- wiki sidebar ---------- */
+
+.list-group-item {
+  background: transparent;
+  border-color: var(--dh-line);
+}
+
+/* ---------- alerts ---------- */
+
+.alert-danger {
+  --bs-alert-bg: #f8e9e6;
+  --bs-alert-border-color: #ecc9c2;
+  --bs-alert-color: #7c3628;
+}

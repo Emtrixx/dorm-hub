@@ -1,11 +1,11 @@
 <template>
-    
-    <base-card @click="postLink" class="card">
-    <h4>{{ title }}</h4>
-    <p><strong>{{ `${author.firstName} ${author.lastName}` }}</strong></p>
-    <p>{{ text }}</p>
+
+    <base-card @click="postLink" class="dh-card-hover news-card">
+    <h4 class="news-title">{{ title }}</h4>
+    <p class="news-author">{{ `${author.firstName} ${author.lastName}` }}</p>
+    <p class="news-text">{{ text }}</p>
     </base-card>
-    
+
 </template>
 
 <script>
@@ -20,15 +20,20 @@ export default {
 </script>
 
 <style scoped>
-a {
-    text-decoration: none;
-    color: black;
-    padding: 0;
+.news-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.15rem;
 }
 
-.card:hover {
-    cursor: pointer;
-    transform: scale(1.01);
-    transition: 200ms all ease;
+.news-author {
+    color: var(--dh-mist);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.news-text {
+    color: var(--dh-ink-soft);
+    margin-bottom: 0;
 }
 </style>

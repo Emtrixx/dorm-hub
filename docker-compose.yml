@@ -30,6 +30,9 @@ services:
     mongo:
         image: mongo:8
         restart: unless-stopped
+        ports:
+            # loopback-only publish so a locally-run dev server can reach the DB
+            - 127.0.0.1:27017:27017
         networks:
             - dormhub-app
         volumes:

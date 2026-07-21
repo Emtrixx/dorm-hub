@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="loading">LOADING</div>
+        <div v-if="loading">Loading…</div>
         <div v-else>
             <base-card>
                 <h1>{{news.title}}</h1>

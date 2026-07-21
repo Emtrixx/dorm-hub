@@ -1,26 +1,18 @@
 <template>
-<base-card class="row justify-content-center">
-  <div class="col-md-8 text-center">
-    <h3>Minecraft Server Status</h3>
-    <div class="header">
-      <div class="image">
-        <img class="img-fluid"  src="https://images-eu.ssl-images-amazon.com/images/I/418cEZfh8-L.jpg" alt="minecraft image" />
-      </div>
-      <h2>dorm-hub.de</h2>
+<section>
+  <h2 class="dh-section-title">Minecraft server</h2>
+  <base-card>
+    <div class="d-flex align-items-center gap-2 mb-2">
+      <span class="status-dot" :class="online ? 'status-online' : 'status-offline'"></span>
+      <code class="server-address">dorm-hub.de</code>
     </div>
-    <div v-if="loading">
-        <p>Loading ...</p>
-    </div>
-    <div v-else>
-        <p>
-            Players Online: {{data.players.online}}/{{data.players.max}}
-        </p>
-        <p>
-            Version: {{data.version.name}}
-        </p>
-    </div>
-  </div>
-</base-card>
+    <p v-if="loading" class="server-meta">Checking status…</p>
+    <p v-else-if="!online" class="server-meta">Offline right now.</p>
+    <p v-else class="server-meta">
+      {{ data.players.online }}/{{ data.players.max }} players online · {{ data.version.name }}
+    </p>
+  </base-card>
+</section>
 </template>
 
 <script>
@@ -28,6 +20,7 @@ export default {
   data() {
     return {
       loading: true,
+      online: false,
       data: {},
       interval_id: undefined
     };
@@ -44,17 +37,18 @@ export default {
             }, 10000);
     },
     async fetchData() {
-      var url = "https://api.minetools.eu/ping/dorm-hub.de/25565";
-      const res = await fetch(url);
-      const resData = await res.json();
-
-      if (!res.ok) {
-        const error = new Error(resData.message || "Failed to fetch post!");
+      try {
+        const res = await fetch("https://api.minetools.eu/ping/dorm-hub.de/25565");
+        const resData = await res.json();
+        if (!res.ok || resData.error) {
+          throw new Error(resData.message || resData.error || "Failed to reach the server!");
+        }
+        this.data = resData
+        this.online = true
+      } catch (error) {
         console.log(error.message);
-        throw error;
+        this.online = false
       }
-      console.log('fetching minecraft data')
-      this.data = resData
       this.loading = false
     },
   },
@@ -68,7 +62,31 @@ export default {
 
 
 <style scoped>
-img {
-    height: 200px;
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-online {
+  background: var(--dh-moss);
+  box-shadow: 0 0 0 3px rgba(76, 130, 89, 0.2);
+}
+
+.status-offline {
+  background: var(--dh-mist);
+  box-shadow: 0 0 0 3px rgba(102, 115, 126, 0.15);
+}
+
+.server-address {
+  color: var(--dh-ink);
+  font-weight: 600;
+}
+
+.server-meta {
+  color: var(--dh-mist);
+  margin-bottom: 0;
+  font-size: 0.9rem;
 }
 </style>

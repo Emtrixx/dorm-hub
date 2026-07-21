@@ -1,16 +1,20 @@
 <template>
     <div>
+        <header class="dh-page-head">
+            <span class="dh-eyebrow">The pinboard</span>
+            <h1>Blackboard</h1>
+        </header>
         <div>
-            <div class="btn-group my-3 flex-wrap">
-                <router-link class="btn btn-primary" to="/blackboard/all">All</router-link>
+            <div class="dh-pills my-3">
+                <router-link class="btn" to="/blackboard/all">All</router-link>
                 <router-link
                     v-for="hub in hubs"
                     :key="hub._id"
-                    class="btn btn-primary"
+                    class="btn"
                     :to="'/blackboard/' + hub.name + '/index'"
                 >{{ hubLabel(hub.name) }}</router-link>
-                <router-link v-if="isAuthenticated" class="btn btn-dark" to="/blackboard/my-hubs">My Hubs</router-link>
-                <button v-if="canManageHubs && !addingHub" class="btn btn-outline-dark" @click="addingHub = true">
+                <router-link v-if="isAuthenticated" class="btn" to="/blackboard/my-hubs">My Hubs</router-link>
+                <button v-if="canManageHubs && !addingHub" class="btn" @click="addingHub = true">
                     <i class="bi bi-plus-lg"></i> Add hub
                 </button>
             </div>
@@ -20,7 +24,6 @@
                 <button class="btn btn-outline-primary" @click="addingHub = false">Dismiss</button>
             </div>
         </div>
-        <hr>
         <router-view class=""></router-view>
     </div>
 </template>

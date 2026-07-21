@@ -32,5 +32,8 @@ export default {
 <style>
 #main {
   min-height: 95vh;
+  max-width: 1100px;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
 }
 </style>

@@ -1,10 +1,13 @@
 <template>
   <div>
-    <h1>Wiki</h1>
+    <header class="dh-page-head">
+      <span class="dh-eyebrow">How things work around here</span>
+      <h1>Wiki</h1>
+    </header>
     <div>
-      <div v-if="canEdit()">
-        <a v-if="!editing" href="#" @click="editing = !editing">Edit</a>
-        <a href="#" @click="editing = !editing" v-else>End editing</a>
+      <div v-if="canEdit()" class="mb-3">
+        <button v-if="!editing" class="btn btn-outline-primary btn-sm" @click="editing = !editing"><i class="bi bi-pen"></i> Edit</button>
+        <button v-else class="btn btn-primary btn-sm" @click="editing = !editing">End editing</button>
       </div>
     </div>
 
@@ -116,8 +119,8 @@ export default {
 }
 
 .sidebar {
-  border-right: 2px black solid;
-  padding-right: 3rem;
+  border-right: 1px solid var(--dh-line);
+  padding-right: 2rem;
 }
 
 .content {

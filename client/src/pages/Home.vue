@@ -1,13 +1,21 @@
 <template>
-<div class="row justify-content-center">
+<div>
+  <header class="dh-page-head">
+    <span class="dh-eyebrow">Studentenwohnheim Hagenbeckstraße</span>
+    <h1>What's happening in the house</h1>
+  </header>
 
-    <news-widget class="col-md-10"></news-widget>
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <news-widget></news-widget>
+    </div>
+    <div class="col-lg-5">
+      <wiki-widget></wiki-widget>
+      <minecraft-widget></minecraft-widget>
+    </div>
+  </div>
 
-    <blackboard-widget class="col-md-10"></blackboard-widget>
-
-    <wiki-widget class="col-md-10"></wiki-widget>
-
-    <minecraft-widget class="col-md-10"></minecraft-widget>
+  <blackboard-widget class="mt-4"></blackboard-widget>
 </div>
 </template>
 

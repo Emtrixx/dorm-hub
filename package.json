@@ -6,6 +6,7 @@
     "node": ">=24"
   },
   "scripts": {
+    "dev:db": "docker compose up -d mongo",
     "dev:server": "pnpm --filter dorm-hub-api dev",
     "dev:client": "pnpm --filter dorm-hub serve",
     "lint": "pnpm --filter dorm-hub lint",

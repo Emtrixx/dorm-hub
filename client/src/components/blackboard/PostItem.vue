@@ -1,14 +1,10 @@
 <template>
-  <div class="col col-md-12 col-lg-4">
-    <base-card @click="postLink" class="card">
-      <h4>{{ title.slice(0, 15) + (title.length > 15 ? "..." : "") }}</h4>
-      <p>
-        <em>hub/{{ id }}</em>
-      </p>
-      <p>{{ text.slice(0, 200) + (text.length > 200 ? "..." : "") }}</p>
-      <p style="color:grey; font-size: 10px;">
-        {{ created_at.toDateString() }}
-      </p>
+  <div class="col col-md-12 col-lg-4 d-flex">
+    <base-card @click="postLink" class="dh-card-hover dh-taped post-card w-100">
+      <span class="hub-tag">{{ id }}</span>
+      <h4 class="post-title">{{ title.slice(0, 40) + (title.length > 40 ? "…" : "") }}</h4>
+      <p class="post-text">{{ text.slice(0, 200) + (text.length > 200 ? "…" : "") }}</p>
+      <p class="post-date">{{ created_at.toDateString() }}</p>
     </base-card>
   </div>
 </template>
@@ -51,15 +47,39 @@ export default {
 </script>
 
 <style scoped>
-/* a {
-    text-decoration: none;
-    color: black;
-    padding: 0;
-} */
+.post-card {
+  display: flex;
+  flex-direction: column;
+}
 
-.card:hover {
-  cursor: pointer;
-  transform: scale(1.01);
-  transition: 200ms all ease;
+.hub-tag {
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dh-mist);
+  border: 1px solid var(--dh-line);
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+  margin-bottom: 0.6rem;
+}
+
+.post-title {
+  font-size: 1.15rem;
+  margin-bottom: 0.35rem;
+}
+
+.post-text {
+  color: var(--dh-ink-soft);
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+
+.post-date {
+  margin-top: auto;
+  margin-bottom: 0;
+  color: var(--dh-mist);
+  font-size: 0.78rem;
 }
 </style>

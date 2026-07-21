@@ -1,7 +1,7 @@
 <template>
     <div class="">
-        <h3 class="text-center">My Hubs</h3>
-        <p v-if="loading">Loading</p>
+        <h3 class="dh-section-title">My Hubs</h3>
+        <p v-if="loading">Loading…</p>
         <div v-else>
             <div class="row">
                 <post-item v-for="post in posts" :post="post" :key="post._id" :id="post.hub.name"></post-item>

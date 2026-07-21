@@ -1,11 +1,14 @@
 <template>
   <div>
-    <h1>News</h1>
+    <header class="dh-page-head">
+      <span class="dh-eyebrow">From the dorm council & friends</span>
+      <h1>News</h1>
+    </header>
     <div v-if="canEdit" class="my-3">
       <button v-if="!addingNews" class="btn btn-primary" @click="addingNews = true">
         Write news
       </button>
-      <div v-else class="card card-body">
+      <div v-else class="dh-card p-3">
         <div class="mb-2">
           <input
             type="text"
@@ -107,7 +110,7 @@ export default {
 <style scoped>
 .delete-button {
   position: absolute;
-  top: 1.5rem;
-  right: 6%;
+  top: 2rem;
+  right: 1rem;
 }
 </style>

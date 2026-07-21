@@ -1,30 +1,25 @@
 <template>
-  <base-card class="text-center">
-    <h3>Latest Blackboard Posts</h3>
-    <div v-if="loading">
-      Loading
-    </div>
-    <div v-else-if="notFound">
-      Not Found
-    </div>
+  <section>
+    <h2 class="dh-section-title">Fresh on the blackboard</h2>
+    <p v-if="loading" class="dh-muted">Loading…</p>
+    <p v-else-if="notFound" class="dh-muted">The blackboard is unreachable right now.</p>
     <div v-else class="row">
       <post-item
         v-for="post in posts"
         :key="post.id"
         :id="post.hub.name"
         :post="post"
-        class=""
       ></post-item>
     </div>
-  </base-card>
+    <router-link to="/blackboard/all" class="dh-more">Open the blackboard <i class="bi bi-arrow-right"></i></router-link>
+  </section>
 </template>
 
 <script>
 import PostItem from "../blackboard/PostItem.vue";
-import BaseCard from "../UI/BaseCard.vue";
 import { api } from "@/api.js";
 export default {
-  components: { PostItem, BaseCard },
+  components: { PostItem },
   data() {
     return {
       loading: true,
@@ -46,12 +41,17 @@ export default {
       this.loading = false;
     },
   },
-  computed: {
-    // hubLink() {
-    //   return `/blackboard/${this.posts[0].hub.name}/index`;
-    // },
-  },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.dh-muted {
+  color: var(--dh-mist);
+}
+
+.dh-more {
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+</style>

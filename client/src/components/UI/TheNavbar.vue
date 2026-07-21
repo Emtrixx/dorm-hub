@@ -1,25 +1,25 @@
 <template>
-<header class="p-3 bg-dark text-white">
+<header class="dh-header">
     <div class="container">
-      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-          <h3><span class="dorm">Dorm</span><span class="hub btn-warning">Hub</span></h3>
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start py-2">
+        <a href="/" class="dh-brand d-flex align-items-center mb-2 mb-lg-0 text-decoration-none">
+          <span class="dh-wordmark">dorm<span class="dh-chip">hub</span></span>
         </a>
 
-        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-          <li><router-link to="/" class="nav-link px-2 text-white">Home</router-link></li>
-          <li><router-link to="/news" class="nav-link px-2 text-white">News</router-link></li>
-          <li><router-link to="/blackboard/all" class="nav-link px-2 text-white">Blackboard</router-link></li>
-          <li><router-link to="/wiki" class="nav-link px-2 text-white">Wiki</router-link></li>
-          <li><router-link to="/meet" class="nav-link px-2 text-white">Meet</router-link></li>
-          <li><router-link to="/calendar" class="nav-link px-2 text-white">Calendar</router-link></li>
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ms-lg-4">
+          <li><router-link to="/" exact-active-class="dh-active" class="nav-link dh-nav-link">Home</router-link></li>
+          <li><router-link to="/news" active-class="dh-active" class="nav-link dh-nav-link">News</router-link></li>
+          <li><router-link to="/blackboard/all" active-class="dh-active" class="nav-link dh-nav-link">Blackboard</router-link></li>
+          <li><router-link to="/wiki" active-class="dh-active" class="nav-link dh-nav-link">Wiki</router-link></li>
+          <li><router-link to="/meet" active-class="dh-active" class="nav-link dh-nav-link">Meet</router-link></li>
+          <li><router-link to="/calendar" active-class="dh-active" class="nav-link dh-nav-link">Calendar</router-link></li>
         </ul>
 
         <div class="text-end">
-          <button type="button" class="btn btn btn-outline-light me-2" v-if="isAuthenticated" @click="logout">Logout</button>
+          <button type="button" class="btn btn-outline-light btn-sm me-2" v-if="isAuthenticated" @click="logout">Log out</button>
           <div v-else>
-          <router-link to="/login"><button type="button" class="btn btn-outline-light me-2">Login</button></router-link>
-          <router-link to="/signup"><button type="button" class="btn btn-warning">Sign-up</button></router-link>
+          <router-link to="/login"><button type="button" class="btn btn-outline-light btn-sm me-2">Log in</button></router-link>
+          <router-link to="/signup"><button type="button" class="btn btn-warning btn-sm">Sign up</button></router-link>
           </div>
         </div>
       </div>
@@ -45,16 +45,64 @@ export default {
 </script>
 
 <style scoped>
-
-.dorm {
-    padding-right: 2px;
+.dh-header {
+  background: var(--dh-ink);
+  color: #fff;
 }
 
-.hub {
-    color: black;
-    border-radius: 10%;
-    padding: 2px 8px;
+.dh-wordmark {
+  font-family: var(--dh-font-display);
+  font-weight: 680;
+  font-size: 1.45rem;
+  letter-spacing: -0.02em;
+  color: #fff;
 }
 
+.dh-wordmark .dh-chip {
+  margin-left: 0.18em;
+  font-size: 0.92em;
+}
 
+.dh-brand:hover .dh-chip {
+  transform: rotate(1.5deg);
+  transition: transform 160ms ease;
+}
+
+.dh-nav-link {
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  position: relative;
+}
+
+.dh-nav-link:hover,
+.dh-nav-link:focus {
+  color: #fff;
+}
+
+.dh-nav-link.dh-active {
+  color: #fff;
+}
+
+.dh-nav-link.dh-active::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.28rem;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--dh-note);
+}
+
+.btn-outline-light {
+  --bs-btn-border-color: rgba(255, 255, 255, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dh-brand:hover .dh-chip {
+    transform: rotate(-2deg);
+    transition: none;
+  }
+}
 </style>

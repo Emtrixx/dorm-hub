@@ -1,11 +1,17 @@
 <template>
   <div class="contain">
-    <div class="btn-group my-3">
-      <button class="btn btn-primary" :class="channel==='test' ? 'active' : ''" @click="switchChannel('test')">Test</button>
-      <button class="btn btn-primary" :class="channel==='all' ? 'active' : ''" @click="switchChannel('all')">All</button>
-      <button class="btn btn-primary" :class="channel==='heimrat' ? 'active' : ''" @click="switchChannel('heimrat')">Heimrat</button>
+    <header class="dh-page-head">
+      <span class="dh-eyebrow">Video calls for the house</span>
+      <h1>Meet</h1>
+    </header>
+    <div class="d-flex flex-wrap align-items-center gap-2 my-3">
+      <div class="dh-pills">
+        <button class="btn" :class="channel==='test' ? 'active' : ''" @click="switchChannel('test')">Test</button>
+        <button class="btn" :class="channel==='all' ? 'active' : ''" @click="switchChannel('all')">All</button>
+        <button class="btn" :class="channel==='heimrat' ? 'active' : ''" @click="switchChannel('heimrat')">Heimrat</button>
+      </div>
+      <a href="https://meet.dorm-hub.de/" class="btn btn-outline-primary btn-sm ms-auto" target="_blank" rel="noopener">Open in new tab <i class="bi bi-box-arrow-up-right"></i></a>
     </div>
-    <a href="https://meet.dorm-hub.de/" class="btn btn-info" target="#">Open in new tab</a>
     <div class="player">
       <iframe
         allow="camera; microphone; fullscreen; display-capture; autoplay"
@@ -38,7 +44,11 @@ export default {
 
 <style>
 .player {
-  height: 85vh;
+  height: 80vh;
   width: 100%;
+  border-radius: var(--dh-radius);
+  overflow: hidden;
+  border: 1px solid var(--dh-line);
+  background: var(--dh-card);
 }
 </style>
