@@ -7,10 +7,14 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: null,
     userId: null,
+    roles: [],
     didAutoLogout: false
   }),
   getters: {
-    isAuthenticated: (state) => !!state.token
+    isAuthenticated: (state) => !!state.token,
+    // UI convenience only — the server re-checks roles on every request
+    hasRole: (state) => (role) =>
+      state.roles.includes(role) || state.roles.includes('admin')
   },
   actions: {
     async signup(body) {
@@ -27,6 +31,7 @@ export const useAuthStore = defineStore('auth', {
 
       localStorage.setItem('token', resData.token)
       localStorage.setItem('userId', resData.userId)
+      localStorage.setItem('roles', JSON.stringify(resData.roles || []))
       localStorage.setItem('tokenExpiration', expirationDate)
 
       timer = setTimeout(() => {
@@ -35,6 +40,7 @@ export const useAuthStore = defineStore('auth', {
 
       this.token = resData.token
       this.userId = resData.userId
+      this.roles = resData.roles || []
       this.didAutoLogout = false
     },
     tryLogin() {
@@ -54,18 +60,25 @@ export const useAuthStore = defineStore('auth', {
       if (token && userId) {
         this.token = token
         this.userId = userId
+        try {
+          this.roles = JSON.parse(localStorage.getItem('roles')) || []
+        } catch {
+          this.roles = []
+        }
         this.didAutoLogout = false
       }
     },
     logout() {
       localStorage.removeItem('token')
       localStorage.removeItem('userId')
+      localStorage.removeItem('roles')
       localStorage.removeItem('tokenExpiration')
 
       clearTimeout(timer)
 
       this.token = null
       this.userId = null
+      this.roles = []
     },
     autoLogout() {
       this.logout()

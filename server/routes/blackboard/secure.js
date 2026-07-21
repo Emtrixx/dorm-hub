@@ -3,10 +3,47 @@ const router = express.Router();
 const Hub = require('../../models/hub')
 const Post = require('../../models/post')
 const Comment = require('../../models/comment')
+const auth = require('../../utils/auth')
 const sharp = require('sharp');
 const fs = require("fs")
 const { randomUUID } = require('node:crypto');
 let images_folder = "./post-images/"
+
+// Hub management needs the 'hubs' role on top of a valid JWT.
+// These fixed paths must stay above the /:hub catch-alls below.
+router.post('/hubs', auth.requireRole('hubs'), async (req, res) => {
+  const name = (req.body.name || '').trim()
+  if (!name) {
+    return res.status(400).json({ message: 'Hub name is required' })
+  }
+  const existing = await Hub.findOne({ name })
+  if (existing) {
+    return res.status(409).json({ message: `Hub "${name}" already exists` })
+  }
+  const hub = new Hub({
+    name,
+    admins: [req.user._id],
+    members: [req.user._id],
+    posts: []
+  })
+  res.send(await hub.save())
+})
+
+router.delete('/hubs/:name', auth.requireRole('hubs'), async (req, res) => {
+  const hub = await Hub.findOne({ name: req.params.name })
+  if (!hub) {
+    return res.status(404).json({ message: 'Hub not found' })
+  }
+  const posts = await Post.find({ hub: hub._id })
+  for (const post of posts) {
+    for (const image_filename of post.images) {
+      fs.unlink(images_folder + image_filename, () => {})
+    }
+  }
+  await Post.deleteMany({ hub: hub._id })
+  await Hub.deleteOne({ _id: hub._id })
+  res.send("Ok")
+})
 
 router.get(
   '/profile',

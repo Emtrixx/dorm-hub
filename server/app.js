@@ -47,10 +47,10 @@ app.use('/auth', authRoutes)
 app.use('/blackboard/secure', auth.requireJWT, blackboardSecureRoutes)
 app.use('/blackboard', blackboardRoutes)
 
-app.use('/news/secure', auth.requireJWT, newsSecureRoutes)
+app.use('/news/secure', auth.requireJWT, auth.requireRole('news'), newsSecureRoutes)
 app.use('/news', newsRoutes)
 
-app.use('/wiki/secure', auth.requireJWT, wikiSecureRoutes)
+app.use('/wiki/secure', auth.requireJWT, auth.requireRole('wiki'), wikiSecureRoutes)
 app.use('/wiki', wikiRoutes)
 
 //error handler. Sends error as json

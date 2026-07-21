@@ -84,14 +84,31 @@ passport.use(
       }
     )
     // Send the token
-    console.log(token)
-    res.json({ token, userId: user._id.toString(), expiresIn: jwtExpiresIn.toString() })
+    res.json({
+      token,
+      userId: user._id.toString(),
+      roles: user.roles || [],
+      expiresIn: jwtExpiresIn.toString()
+    })
   }
-  
+
+  // Role check for use after requireJWT. Roles are read from the user document
+  // requireJWT just loaded, so role changes apply immediately without re-login.
+  function requireRole(role) {
+    return (req, res, next) => {
+      const roles = (req.user && req.user.roles) || []
+      if (roles.includes(role) || roles.includes('admin')) {
+        return next()
+      }
+      res.status(403).json({ message: `Missing permission: ${role}` })
+    }
+  }
+
   module.exports = {
     initialize: passport.initialize(),
     register,
     signIn: passport.authenticate('local', { session: false }),
     requireJWT: passport.authenticate('jwt', { session: false }),
+    requireRole,
     signJWTForUser
   }

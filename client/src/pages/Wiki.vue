@@ -2,7 +2,7 @@
   <div>
     <h1>Wiki</h1>
     <div>
-      <div v-if="isAuthenticated()">
+      <div v-if="canEdit()">
         <a v-if="!editing" href="#" @click="editing = !editing">Edit</a>
         <a href="#" @click="editing = !editing" v-else>End editing</a>
       </div>
@@ -64,8 +64,8 @@ export default {
     this.fetchData();
   },
   methods: {
-    isAuthenticated() {
-      return useAuthStore().isAuthenticated
+    canEdit() {
+      return useAuthStore().hasRole('wiki')
     },
     async fetchData() {
       this.wikiContent = await api.get("wiki/all");

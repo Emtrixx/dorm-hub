@@ -5,7 +5,12 @@ const passportLocalMongoose = require('passport-local-mongoose');
 
 const UserSchema = new Schema({
     firstName: String,
-    lastName: String
+    lastName: String,
+    // domain roles: 'news', 'wiki', 'hubs' — 'admin' implies all of them
+    roles: {
+        type: [String],
+        default: []
+    }
 },{ timestamps: true })
 
 //Passport handles password and email
