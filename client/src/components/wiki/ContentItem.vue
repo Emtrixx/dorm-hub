@@ -32,21 +32,17 @@
 </template>
 
 <script>
+import { api } from "@/api.js";
+
 export default {
   data() {
     return {};
   },
   methods: {
     async setArticleToCategory(article, categoryID) {
-      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
-      await fetch(url + "wiki/secure/setArticleToCategory", {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': "Bearer " + localStorage.getItem('token')
-        },
-        body: JSON.stringify({ category: categoryID, article: article }),
-      });
+      await api.post("wiki/secure/setArticleToCategory",
+        { category: categoryID, article: article },
+        { auth: true });
       this.$parent.editingArticle = false;
       this.$parent.addingArticle = false;
       this.$emit("updatedwikidata");

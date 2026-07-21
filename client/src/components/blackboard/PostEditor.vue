@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import { api } from "@/api.js";
+
 export default {
     props: ["current_post", "hubId"],
     data() {
@@ -52,26 +54,10 @@ export default {
         async sendPost() {
             this.post.title = this.title;
             this.post.text = this.text;
-            let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
-            await fetch(url + 'blackboard/secure/setPost', {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': "Bearer " + localStorage.getItem('token')
-                },
-                method: 'POST',
-                body: JSON.stringify(this.post)
-            })
+            await api.post('blackboard/secure/setPost', this.post, { auth: true })
         },
         async deletePost() {
-            let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
-            await fetch(url + 'blackboard/secure/'+this.hubId + "/" + this.post._id, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': "Bearer " + localStorage.getItem('token')
-                },
-                method: 'DELETE',
-                body: JSON.stringify(this.post)
-            })
+            await api.delete(`blackboard/secure/${this.hubId}/${this.post._id}`, this.post, { auth: true })
             this.$router.push("/blackboard/"+this.hubId + "/index");
         }
     },

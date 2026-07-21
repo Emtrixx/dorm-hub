@@ -14,6 +14,7 @@
 
 <script>
 import PostItem from "./PostItem.vue";
+import { api } from "@/api.js";
 export default {
     components: {
         PostItem
@@ -29,23 +30,7 @@ export default {
     },
     methods: {
         async fetchData() {
-            let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
-            const res = await fetch(url + `blackboard/secure/myPosts`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': "Bearer " + localStorage.getItem('token')
-                },
-                method: 'GET',
-            })
-            const resData = await res.json()
-
-            if (!res.ok) {
-                const error = new Error(resData.message || 'Failed to fetch post!')
-                console.log(error.message);
-                throw error
-            }
-
-            this.posts = resData
+            this.posts = await api.get('blackboard/secure/myPosts', { auth: true })
             this.loading = false
         }
     },

@@ -16,6 +16,8 @@
 <script>
 import PostForm from "./PostForm.vue";
 import PostItem from "./PostItem.vue";
+import { useAuthStore } from "@/stores/auth.js";
+import { useBlackboardStore } from "@/stores/blackboard.js";
 export default {
   components: {
     PostForm,
@@ -34,7 +36,7 @@ export default {
   },
   computed: {
     posts() {
-      return this.$store.getters["blackboard/getPosts"];
+      return useBlackboardStore().posts;
     },
     hubId() {
       this.fetchData();
@@ -44,7 +46,7 @@ export default {
       return this.$route.params.id;
     },
     isAuthenticated() {
-      return this.$store.getters['isAuthenticated']
+      return useAuthStore().isAuthenticated
     }
   },
   mounted() {
@@ -53,7 +55,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        await this.$store.dispatch("blackboard/fetchHub", { hub: this.id });
+        await useBlackboardStore().fetchHub(this.id);
         this.loading = false
       } catch (error) {
         console.log(error)
@@ -64,10 +66,7 @@ export default {
       this.showForm = !this.showForm;
     },
     async createPost(data) {
-      await this.$store.dispatch("blackboard/createPost", {
-        hub: this.id,
-        data,
-      });
+      await useBlackboardStore().createPost(data);
       this.toggleForm();
       this.fetchData();
     },

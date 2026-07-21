@@ -15,7 +15,7 @@
 
 <script>
 import { computed, toRefs  } from 'vue'
-import { useStore } from 'vuex'
+import { useAuthStore } from '@/stores/auth.js'
 import { useRouter } from 'vue-router'
 export default {
     props: {
@@ -23,15 +23,15 @@ export default {
         post: Object,
     },
     setup(props) {
-        const store = useStore();
+        const authStore = useAuthStore();
         const router = useRouter();
         const { post } = toRefs(props);
         const { _id, author, title, text, createdAt } = toRefs(post.value);
         const currentUserId = computed(() => {
-            return store.getters.userId;
+            return authStore.userId;
         });
         const isAuthenticated = computed(() => {
-            return store.getters.isAuthenticated;
+            return authStore.isAuthenticated;
         });
         function postLink() {
             router.push('/blackboard/' + props.id + '/' + _id.value);

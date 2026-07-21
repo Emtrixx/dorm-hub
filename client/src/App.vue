@@ -14,6 +14,7 @@
 <script>
 import TheNavbar from './components/UI/TheNavbar.vue'
 import TheFooter from './components/UI/TheFooter.vue'
+import { useAuthStore } from './stores/auth.js'
 
 export default {
   components: {
@@ -21,7 +22,7 @@ export default {
     TheFooter
   },
   created() {
-      this.$store.dispatch('tryLogin')
+      useAuthStore().tryLogin()
   },
 }
 

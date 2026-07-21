@@ -17,6 +17,7 @@
 
 <script>
 import NewsItem from "../components/news/NewsItem.vue";
+import { api } from "@/api.js";
 export default {
   components: { NewsItem },
   data() {
@@ -35,17 +36,7 @@ export default {
   },
   methods: {
     async fetchData() {
-      let url = import.meta.env.VITE_HOST || "http://localhost:8081/"
-      const res = await fetch(url + "news/all");
-      const resData = await res.json();
-
-      if (!res.ok) {
-        const error = new Error(resData.message || "Failed to fetch post!");
-        console.log(error.message);
-        throw error;
-      }
-        console.log(resData)
-      this.newsList = resData;
+      this.newsList = await api.get("news/all");
       this.loading = false
     },
   },

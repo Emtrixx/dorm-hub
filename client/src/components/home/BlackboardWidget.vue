@@ -22,6 +22,7 @@
 <script>
 import PostItem from "../blackboard/PostItem.vue";
 import BaseCard from "../UI/BaseCard.vue";
+import { api } from "@/api.js";
 export default {
   components: { PostItem, BaseCard },
   data() {
@@ -36,18 +37,12 @@ export default {
   },
   methods: {
     async fetchLatestPosts() {
-      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
-      const res = await fetch(url + "blackboard/latestPosts?count=3");
-      const resData = await res.json();
-      if (!res.ok) {
-        const error = new Error(resData.message || "Failed to fetch post!");
+      try {
+        this.posts = await api.get("blackboard/latestPosts?count=3");
+      } catch (error) {
         console.log(error.message);
-        this.loading = false;
         this.notFound = true;
-        // throw error
       }
-
-      this.posts = resData;
       this.loading = false;
     },
   },

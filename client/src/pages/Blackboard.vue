@@ -18,11 +18,12 @@
 
 
 <script>
+import { useAuthStore } from '@/stores/auth.js'
 
 export default {
   computed: {
     isAuthenticated() {
-      return this.$store.getters['isAuthenticated']
+      return useAuthStore().isAuthenticated
     }
   },
 };

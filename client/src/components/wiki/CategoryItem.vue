@@ -42,6 +42,9 @@
 </template>
 
 <script>
+import { api } from "@/api.js";
+import { useAuthStore } from "@/stores/auth.js";
+
 export default {
   props: { thisCategory: { type: Object } },
   data() {
@@ -57,46 +60,33 @@ export default {
   },
   methods: {
     userId() {
-      return this.$store.getters['userId']
+      return useAuthStore().userId
     },
     openCategoryEditor(categoryName) {
       this.renamingCategory = true;
       this.editingCategoryName = categoryName;
     },
     async renameCategory(categoryName, categoryId) {
-      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
       this.renamingCategory = false;
-      await fetch(url + "wiki/renameCategory", {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ newName: categoryName, categoryId: categoryId }),
-      });
+      await api.post("wiki/renameCategory", { newName: categoryName, categoryId: categoryId });
       this.category.name = categoryName;
       this.$emit("updatedwikidata");
     },
     async removeCategory(category) {
       if (confirm("Do you want to delete " + category + "?")) {
-        let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
-        let res = await fetch(url + "wiki/removeCategory", {
-          method: "post",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: category }),
-        });
-        if (!res.ok) alert("Could not delete category " + category + ".");
+        try {
+          await api.post("wiki/removeCategory", { name: category });
+        } catch {
+          alert("Could not delete category " + category + ".");
+        }
         this.$parent.selectedArticle = {};
         this.$emit("updatedwikidata");
         //this.editingArticle = false;
       }
     },
     async removeArticle(article) {
-      console.log(article);
       if (confirm("Do you want to delete " + article.title + "?")) {
-        let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
-        await fetch(url + "wiki/removeArticle", {
-          method: "post",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ articleId: article._id }),
-        });
+        await api.post("wiki/removeArticle", { articleId: article._id });
         this.category.articles = this.category.articles.filter(
           (wikiArticle) => wikiArticle._id !== article._id
         );

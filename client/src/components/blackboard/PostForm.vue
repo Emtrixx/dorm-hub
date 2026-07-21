@@ -21,6 +21,9 @@
 </template>
 
 <script>
+import { api } from "@/api.js";
+import { useAuthStore } from "@/stores/auth.js";
+
 export default {
   props: ['hub'],
   data() {
@@ -41,27 +44,13 @@ export default {
       this.images = data
     },
     async submitForm() {
-      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
       //get post id
-      let res = await fetch(url + 'blackboard/secure/new-post-id/' + this.hub, {
-        headers: {
-          'Authorization': "Bearer " + localStorage.getItem('token')
-        },
-        method: 'GET'
-      }
-      );
-      let postId = await res.json()
+      let postId = await api.get('blackboard/secure/new-post-id/' + this.hub, { auth: true })
 
       let data = this.images
       //postId is there and in data object
       data.append("postId", postId)
-      await fetch(url + 'blackboard/secure/upload-images', {
-        headers: {
-          'Authorization': "Bearer " + localStorage.getItem('token')
-        },
-        method: 'POST',
-        body: data
-      })
+      await api.post('blackboard/secure/upload-images', data, { auth: true })
 
       let formData = {
         title: this.title,
@@ -69,10 +58,11 @@ export default {
         comments: [],
       };
 
-      if (this.$store.getters.userId) {
+      const { userId } = useAuthStore()
+      if (userId) {
         formData = {
           ...formData,
-          author: this.$store.getters.userId,
+          author: userId,
           _id: postId
         };
       }

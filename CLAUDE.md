@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 dorm-hub is a pnpm-workspace monorepo: a Vue 3 SPA in `client/` (package name `dorm-hub`) and an Express/MongoDB REST API in `server/` (package name `dorm-hub-api`). Run `pnpm install` once at the repo root — it installs both packages. Node 24+ (see `.nvmrc`), pnpm 11+. Packages with install scripts must be approved in `pnpm-workspace.yaml` (`allowBuilds`).
 
-A modernization effort is in progress (see git history). Done so far: pnpm workspace, Node 24 pin, dependency purge + security upgrades (jsonwebtoken 9, passport 0.7, sharp 0.34, Mongoose 8, Express 5, passport-local-mongoose 8), JWT secret/port moved to env vars, route prefixes normalized to `/<domain>/secure`, server test suite (Vitest + supertest + mongodb-memory-server), Docker rework, CI, and the client toolchain (Vite 7, Vitest, ESLint 9 flat config, Cypress 14). Zero `pnpm audit` findings across prod and dev. Still planned: Vuex→Pinia, `<script setup>` standardization, central API client, optional TypeScript.
+A modernization effort was completed in 2026-07 (see git history): pnpm workspace, Node 24 pin, dependency purge + security upgrades (jsonwebtoken 9, passport 0.7, sharp 0.34, Mongoose 8, Express 5, passport-local-mongoose 8), JWT secret/port moved to env vars, route prefixes normalized to `/<domain>/secure`, server test suite (Vitest + supertest + mongodb-memory-server), Docker rework, CI, client toolchain (Vite 7, Vitest, ESLint 9 flat config, Cypress 14), Pinia stores, and a central API client. Zero `pnpm audit` findings across prod and dev. Optional leftovers: TypeScript, `<script setup>` standardization (convert opportunistically), re-enabling registration.
 
 ## Commands
 
@@ -48,7 +48,8 @@ All commands can be run from the repo root via pnpm filters, or inside the packa
 
 ### Client
 - Vue 3 with Options and Composition API mixed; Bootstrap 5 for styling (CSS from npm in `main.js`, JS bundle + icons from CDN in `index.html`). Vite 7 (`vite.config.mjs`, which also holds the Vitest config); `index.html` lives at the client root. Imports of `.vue` files must include the extension — Vite does not resolve extensionless `.vue` imports.
-- State: Vuex 4 with one module per domain (`store/auth`, `store/blackboard`, `store/news`, `store/wiki`), each split into `index.js`/`actions.js`/`mutations.js`/`getters.js`. API calls happen in the actions via `fetch`.
+- State: Pinia stores in `src/stores/` (`auth`, `blackboard`, `news`). Components call `useXStore()` directly inside computed/methods. The auth store mirrors the token to localStorage (the API client reads it from there).
+- All HTTP goes through `src/api.js` (`api.get/post/delete(path, body?, { auth })`): prepends the base URL, JSON-encodes non-FormData bodies, attaches the Bearer token when `auth: true`, throws on non-2xx (callers that tolerate failure wrap in try/catch), and returns parsed JSON or raw text. `BASE_URL` is exported for building asset URLs (post images).
 - Routing: `src/router.js`. The blackboard section uses nested routes (`/blackboard/:id/:postId`) with `props: true`.
-- The backend base URL is read from `import.meta.env.VITE_HOST`, defaulting to `http://localhost:8081/` — read inline at every call site (a central API client is planned). Note: the Docker client build has no `.env`, so it bakes in the localhost default.
+- The backend base URL comes from `import.meta.env.VITE_HOST` (only read in `src/api.js`), defaulting to `http://localhost:8081/`. Note: the Docker client build has no `.env`, so it bakes in the localhost default.
 - Domain components live in `src/components/<domain>/`, shared UI in `src/components/UI/`, route-level pages in `src/pages/`.

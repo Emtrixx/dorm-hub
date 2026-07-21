@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { useAuthStore } from '@/stores/auth.js'
+
 export default {
   data() {
     return {
@@ -32,10 +34,11 @@ export default {
         text: this.text,
       };
 
-      if (this.$store.getters.userId) {
+      const { userId } = useAuthStore()
+      if (userId) {
         formData = {
           ...formData,
-          author: this.$store.getters.userId,
+          author: userId,
         };
       }
 

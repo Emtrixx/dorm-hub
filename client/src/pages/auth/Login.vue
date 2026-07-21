@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import { useAuthStore } from '@/stores/auth.js'
+
 export default {
     data() {
         return {
@@ -46,7 +48,7 @@ export default {
             password: this.password
           }
           try {
-            await this.$store.dispatch('login', user)
+            await useAuthStore().login(user)
             this.$router.replace('/')
           } catch (error) {
             this.password = ''

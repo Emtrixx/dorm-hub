@@ -47,6 +47,9 @@
 <script>
 import CommentForm from "./CommentForm.vue";
 import PostEditor from "./PostEditor.vue";
+import { api, BASE_URL } from "@/api.js";
+import { useAuthStore } from "@/stores/auth.js";
+import { useBlackboardStore } from "@/stores/blackboard.js";
 export default {
   props: ["id", "postId"],
   components: { CommentForm, PostEditor },
@@ -58,13 +61,13 @@ export default {
   },
   computed: {
     post() {
-      return this.$store.getters["blackboard/getPost"];
+      return useBlackboardStore().post;
     },
     currentUserId() {
-      return this.$store.getters["userId"];
+      return useAuthStore().userId;
     },
     url() {
-      return import.meta.env.VITE_HOST || "http://localhost:8081/";
+      return BASE_URL;
     },
   },
   created() {
@@ -72,38 +75,11 @@ export default {
   },
   methods: {
     async fetchPost() {
-      await this.$store.dispatch("blackboard/fetchPost", {
-        hubId: this.id,
-        postId: this.postId,
-      });
+      await useBlackboardStore().fetchPost(this.id, this.postId);
       this.loading = false;
     },
     async createComment(data) {
-      const payload = {
-        hubId: this.id,
-        postId: this.postId,
-        data,
-      };
-      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
-      const res = await fetch(
-        url + "blackboard/secure/" + payload.hubId + "/" + payload.postId,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-          method: "POST",
-          body: JSON.stringify(payload.data),
-        }
-      );
-
-      const resData = await res.json();
-
-      if (!res.ok) {
-        const error = new Error(resData.message || "Failed to create comment!");
-        console.log(error.message);
-        throw error;
-      }
+      await api.post(`blackboard/secure/${this.id}/${this.postId}`, data, { auth: true });
       this.fetchPost();
     },
   },

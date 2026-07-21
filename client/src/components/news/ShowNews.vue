@@ -23,6 +23,7 @@
 
 <script>
 import CommentForm from '../blackboard/CommentForm.vue'
+import { useNewsStore } from '@/stores/news.js'
 export default {
     props: ['newsId'],
     components: {CommentForm},
@@ -34,7 +35,7 @@ export default {
     },
     computed: {
         news() {
-            return this.$store.getters['news/getNewsItem']
+            return useNewsStore().newsItem
         }
     },
     mounted() {
@@ -42,7 +43,7 @@ export default {
     },
     methods: {
         async fetchData() {
-            await this.$store.dispatch('news/fetchNewsItem', {newsId: this.newsId})
+            await useNewsStore().fetchNewsItem(this.newsId)
             this.loading = false
         }
     }

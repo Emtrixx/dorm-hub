@@ -43,6 +43,8 @@
 <script>
 import CategoryItem from "../components/wiki/CategoryItem.vue";
 import ContentItem from "../components/wiki/ContentItem.vue";
+import { api } from "@/api.js";
+import { useAuthStore } from "@/stores/auth.js";
 export default {
   components: { CategoryItem, ContentItem },
   data() {
@@ -55,35 +57,20 @@ export default {
       editing: false,
       selectedArticleIndex: { categoryId: "", articleIdx: 0 },
       selectedArticle: {},
+      wikiContent: [],
     };
   },
   mounted() {
     this.fetchData();
   },
-  computed() {
-    return {
-      wikiContent: [],
-      //selectedArticle:{title:"",text:""}
-    };
-  },
   methods: {
     isAuthenticated() {
-      return this.$store.getters['isAuthenticated']
+      return useAuthStore().isAuthenticated
     },
     async fetchData() {
-      console.log("fetch data")
-      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
-      const res = await fetch(url + "wiki/all");
-      const resData = await res.json();
-      if (!res.ok) {
-        const error = new Error(resData.message || "Failed to fetch post!");
-        console.log(error.message);
-        throw error;
-      }
-      this.wikiContent = resData;
+      this.wikiContent = await api.get("wiki/all");
       this.loading = false;
       this.updateSelectedArticle();
-      this.$forceUpdate();
     },
     updateSelectedArticle() {
       //set selected article to selectedArticleIndex
@@ -102,12 +89,7 @@ export default {
       }
     },
     async addCategory(category) {
-      let url = import.meta.env.VITE_HOST || "http://localhost:8081/";
-      await fetch(url + "wiki/addCategory", {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: category }),
-      });
+      await api.post("wiki/addCategory", { name: category });
       this.addingCategory = false;
       this.fetchData();
     },
