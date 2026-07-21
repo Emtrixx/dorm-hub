@@ -86,7 +86,7 @@ export default {
       };
       let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
       const res = await fetch(
-        url + "blackboard-secure/" + payload.hubId + "/" + payload.postId,
+        url + "blackboard/secure/" + payload.hubId + "/" + payload.postId,
         {
           headers: {
             "Content-Type": "application/json",

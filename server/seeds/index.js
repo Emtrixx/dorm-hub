@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
 const mongoose = require("mongoose");
 //Blackboard
 const Hub = require('../models/hub')
@@ -14,12 +17,7 @@ var MarkdownIt = require('markdown-it'),
 
 
 const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/dorm-hub"
-mongoose.connect(dbUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true
-})
+mongoose.connect(dbUrl)
     .then(() => {
         console.log("Connected to mongodb");
     }).catch(() => {

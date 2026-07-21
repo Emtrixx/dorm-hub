@@ -43,7 +43,7 @@ export default {
     async submitForm() {
       let url = process.env.VUE_APP_HOST || "http://localhost:8081/";
       //get post id
-      let res = await fetch(url + 'blackboard-secure/new-post-id/' + this.hub, {
+      let res = await fetch(url + 'blackboard/secure/new-post-id/' + this.hub, {
         headers: {
           'Authorization': "Bearer " + localStorage.getItem('token')
         },
@@ -55,7 +55,7 @@ export default {
       let data = this.images
       //postId is there and in data object
       data.append("postId", postId)
-      await fetch(url + 'blackboard-secure/upload-images', {
+      await fetch(url + 'blackboard/secure/upload-images', {
         headers: {
           'Authorization': "Bearer " + localStorage.getItem('token')
         },

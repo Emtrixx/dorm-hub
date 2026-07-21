@@ -1,12 +1,13 @@
 
 const User = require('../models/user')
 const passport = require('passport');
-const localStrategy = require('passport-local');
 const JWT = require('jsonwebtoken')
 const PassportJwt = require('passport-jwt')
 
-const jwtSecret =
-  'QOOC3nUVl9yTZiH2F0VYjOJhwm2ZkyBjWK7Mzo4bH54cNBBUQmp262S0Tx1eBBTT'
+const jwtSecret = process.env.JWT_SECRET
+if (!jwtSecret) {
+  throw new Error('JWT_SECRET is not set. Copy server/.env.example to server/.env and set a secret.')
+}
 const jwtAlgorithm = 'HS256'
 const jwtExpiresIn = 1000 * 60 * 60 * 24 * 7
 

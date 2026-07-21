@@ -1,0 +1,15 @@
+{
+  "name": "dorm-hub-root",
+  "private": true,
+  "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev:server": "pnpm --filter dorm-hub-api dev",
+    "dev:client": "pnpm --filter dorm-hub serve",
+    "lint": "pnpm --filter dorm-hub lint",
+    "test:unit": "pnpm --filter dorm-hub test:unit",
+    "seed": "pnpm --filter dorm-hub-api exec node seeds/index.js"
+  }
+}

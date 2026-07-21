@@ -1,0 +1,13 @@
+packages:
+  - client
+  - server
+allowBuilds:
+  core-js: false
+  cypress: true
+  deasync: true
+  ejs: false
+  esbuild: true
+  fsevents: true
+  mongodb-memory-server: true
+  sharp: true
+  yorkie: false

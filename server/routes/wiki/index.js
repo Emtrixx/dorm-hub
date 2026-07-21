@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Wiki = require('../../models/wiki')
-const mongoose = require('mongoose')
 var MarkdownIt = require('markdown-it'),
     md = new MarkdownIt();
 
@@ -52,16 +51,16 @@ router.post('/renameCategory', async (req, res) => {
 router.get('/getArticle', async (req, res) => {
     let articleId = req.query.id;
     console.log("articleId: " + articleId);
-    let article = await Wiki.WikiArticle.find({ "_id": mongoose.Types.ObjectId(articleId) }).populate("author");
+    let article = await Wiki.WikiArticle.find({ "_id": articleId }).populate("author");
     res.send(JSON.stringify(article));
 })
 
 router.post('/removeArticle', async (req, res) => {
     let articleId = req.body.articleId;
     await Wiki.WikiArticle.deleteOne({ "_id": articleId });
-    let category = await Wiki.WikiCategory.findOne({ articles: { _id: articleId } });
-    category.articles = category.articles.filter(item => item._id !== articleId);
-    category.save();
+    let category = await Wiki.WikiCategory.findOne({ articles: articleId });
+    category.articles = category.articles.filter(item => item.toString() !== articleId);
+    await category.save();
     res.send("It worked!");
 })
 

@@ -11,9 +11,8 @@ describe('login', () => {
   it('login with UI', () => {
     cy.visit('/')
     cy.contains('Login').click()
-    cy.get('#email')
-      .type('test@test.de')
-      .should('have.value', 'test@test.de')
+    cy.get('#email').type('test@test.de')
+    cy.get('#email').should('have.value', 'test@test.de')
     cy.get('#password')
       .type('test')
     cy.contains('Submit')

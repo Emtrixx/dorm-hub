@@ -1,23 +1,27 @@
 # dorm-hub
 
 ## Project setup
-```
-npm install
-```
+Run `pnpm install` at the repo root (pnpm workspace).
 
 ### Compiles and hot-reloads for development
 ```
-npm run serve
+pnpm serve
 ```
 
 ### Compiles and minifies for production
 ```
-npm run build
+pnpm build
 ```
 
 ### Lints and fixes files
 ```
-npm run lint
+pnpm lint
+```
+
+### Unit / e2e tests
+```
+pnpm test:unit
+pnpm test:e2e
 ```
 
 ### Customize configuration

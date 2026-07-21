@@ -9,10 +9,6 @@ const cors = require('cors')
 const auth = require('./utils/auth')
 const fileUpload = require('express-fileupload');
 
-const bodyParser = require('body-parser');
-const morgan = require('morgan');
-const _ = require('lodash');
-
 app.use(express.static('post-images'));
 // enable files upload
 app.use(fileUpload({
@@ -23,22 +19,6 @@ app.use(cors())
 //makes json and urlencoded response data usable
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-
-
-//mongoose connects to mongoDB
-const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/dorm-hub"
-mongoose.connect(dbUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true
-})
-    .then(() => {
-        console.log("Connected to mongodb");
-        console.log(dbUrl);
-    }).catch(() => {
-        console.log("ERROR - Could not connect to mongodb");
-    })
 
 
 // Routes files
@@ -56,20 +36,22 @@ const wikiRoutes = require('./routes/wiki/index')
 const wikiSecureRoutes = require('./routes/wiki/secure')
 
 // Routing
-// Secure routes use auth middleware before routing
+// Each domain mounts its JWT-protected router on /<domain>/secure and its
+// public router on /<domain>. Secure routers must be mounted first: the public
+// blackboard router has a catch-all /:hub route that would otherwise swallow
+// /secure/... paths.
 app.use('/', generalRoutes)
 
 app.use('/auth', authRoutes)
 
-app.use('/blackboard-secure', auth.requireJWT, blackboardSecureRoutes)
+app.use('/blackboard/secure', auth.requireJWT, blackboardSecureRoutes)
 app.use('/blackboard', blackboardRoutes)
 
-
+app.use('/news/secure', auth.requireJWT, newsSecureRoutes)
 app.use('/news', newsRoutes)
-app.use('/news', auth.requireJWT, newsSecureRoutes)
 
+app.use('/wiki/secure', auth.requireJWT, wikiSecureRoutes)
 app.use('/wiki', wikiRoutes)
-app.use('/wiki-secure', auth.requireJWT,wikiSecureRoutes)
 
 //error handler. Sends error as json
 app.use(function(err, req, res, next) {
@@ -77,8 +59,21 @@ app.use(function(err, req, res, next) {
     res.json({ error: err });
 });
 
-//Server start on port xxxx
-const port = 8081;
-app.listen(port, () => {
-    console.log('Server running: ' + port)
-})
+module.exports = app
+
+// Only connect and listen when run directly (tests import the app instead)
+if (require.main === module) {
+    const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/dorm-hub"
+    mongoose.connect(dbUrl)
+        .then(() => {
+            console.log("Connected to mongodb");
+            console.log(dbUrl);
+        }).catch(() => {
+            console.log("ERROR - Could not connect to mongodb");
+        })
+
+    const port = process.env.PORT || 8081;
+    app.listen(port, () => {
+        console.log('Server running: ' + port)
+    })
+}

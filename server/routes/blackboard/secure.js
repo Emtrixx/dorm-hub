@@ -5,7 +5,7 @@ const Post = require('../../models/post')
 const Comment = require('../../models/comment')
 const sharp = require('sharp');
 const fs = require("fs")
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('node:crypto');
 let images_folder = "./post-images/"
 
 router.get(
@@ -31,7 +31,7 @@ router.post('/upload-images', async (req, res) => {
       const post = await Post.findOne({ "_id": postId })
       await Object.keys(req.files).forEach((filename) => {
         let file = req.files[filename]
-        let unique_filename = uuidv4()
+        let unique_filename = randomUUID()
         //save image to images_folder
         //file.mv(images_folder + file.name);
         sharp(file.data)
