@@ -4,6 +4,10 @@ services:
         build:
             context: .
             dockerfile: client/Dockerfile
+            args:
+                # same-origin API path; the client container's nginx forwards
+                # /api/ to the server container (see client/nginx.conf)
+                VITE_HOST: /api/
         restart: unless-stopped
         ports:
             - 127.0.0.1:8082:80
@@ -17,8 +21,8 @@ services:
             context: .
             dockerfile: server/Dockerfile
         restart: unless-stopped
-        ports:
-            - 127.0.0.1:8081:8081
+        # not published on the host: the client container proxies /api/ to it
+        # over the compose network
         environment:
             - DB_URL=mongodb://mongo:27017/dorm-hub
             # compose reads JWT_SECRET from a .env file next to this compose file

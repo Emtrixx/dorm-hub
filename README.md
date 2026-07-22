@@ -43,3 +43,19 @@ and test if everything is working correctly.
 
 For seeding the DB inside the mongo container uncomment the seed section in the docker-compose.yml before executing.
 Since we are also using a mongo-express container, you can use the GUI under localhost:8085 to interact with the DB.
+
+## Deployment behind a reverse proxy
+
+Point your public reverse proxy at the client container's port (8082) — that is
+the only port the stack needs exposed. The compose client build calls the API
+**same-origin** under `/api/` (baked in via the `VITE_HOST` build arg in
+`docker-compose.yml`), and the client container's nginx forwards `/api/` to the
+server container over the compose network. No extra proxy rules and no CORS
+involved.
+
+The client container's nginx also serves the SPA with an `index.html` fallback,
+so deep links like `/news/<id>` survive a page refresh.
+
+After pulling changes, rebuild with `docker compose up --build -d` so the
+client bundle picks up the build arg.
+
