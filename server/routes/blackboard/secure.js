@@ -9,6 +9,17 @@ const fs = require("fs")
 const { randomUUID } = require('node:crypto');
 let images_folder = "./post-images/"
 
+// Users with the 'hubs' role act as blackboard moderators: they may edit and
+// delete any post or comment. Everyone else only their own.
+function canModerate(user) {
+  const roles = (user && user.roles) || []
+  return roles.includes('hubs') || roles.includes('admin')
+}
+
+function isAuthor(doc, user) {
+  return doc.author != null && doc.author.equals(user._id)
+}
+
 // Hub management needs the 'hubs' role on top of a valid JWT.
 // These fixed paths must stay above the /:hub catch-alls below.
 router.post('/hubs', auth.requireRole('hubs'), async (req, res) => {
@@ -39,9 +50,25 @@ router.delete('/hubs/:name', auth.requireRole('hubs'), async (req, res) => {
     for (const image_filename of post.images) {
       fs.unlink(images_folder + image_filename, () => {})
     }
+    await Comment.deleteMany({ _id: { $in: post.comments } })
   }
   await Post.deleteMany({ hub: hub._id })
   await Hub.deleteOne({ _id: hub._id })
+  res.send("Ok")
+})
+
+//Delete comment — its author or a moderator.
+//Fixed path: must stay above the /:hub/:postId catch-alls below.
+router.delete('/comments/:commentId', async (req, res) => {
+  const comment = await Comment.findById(req.params.commentId)
+  if (!comment) {
+    return res.status(404).json({ message: 'Comment not found' })
+  }
+  if (!isAuthor(comment, req.user) && !canModerate(req.user)) {
+    return res.status(403).json({ message: 'Not allowed to delete this comment' })
+  }
+  await Post.updateOne({ comments: comment._id }, { $pull: { comments: comment._id } })
+  await Comment.deleteOne({ _id: comment._id })
   res.send("Ok")
 })
 
@@ -66,6 +93,12 @@ router.post('/upload-images', async (req, res) => {
     } else {
       let postId = req.body.postId
       const post = await Post.findOne({ "_id": postId })
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found' })
+      }
+      if (post.author != null && !isAuthor(post, req.user) && !canModerate(req.user)) {
+        return res.status(403).json({ message: 'Not allowed to edit this post' })
+      }
       await Object.keys(req.files).forEach((filename) => {
         let file = req.files[filename]
         let unique_filename = randomUUID()
@@ -92,23 +125,34 @@ router.post('/upload-images', async (req, res) => {
   }
 });
 
-//Create Comment
+//Create Comment — author always comes from the JWT, not the body
 router.post('/:hub/:postId', async (req, res) => {
   const { postId } = req.params
   const post = await Post.findById(postId)
-  const comment = new Comment(req.body)
+  if (!post) {
+    return res.status(404).json({ message: 'Post not found' })
+  }
+  const comment = new Comment({ text: req.body.text, author: req.user._id })
   post.comments.unshift(comment)
   await post.save()
   const data = await comment.save()
   res.send(data)
 })
 
+//Edit post (also finalizes posts created via new-post-id) — author or moderator only
 router.post('/setPost', async (req, res) => {
-  console.log(req.body._id)
   const post = await Post.findOne({ "_id": req.body._id });
+  if (!post) {
+    return res.status(404).json({ message: 'Post not found' })
+  }
+  if (post.author != null && !isAuthor(post, req.user) && !canModerate(req.user)) {
+    return res.status(403).json({ message: 'Not allowed to edit this post' })
+  }
   post.text = req.body.text;
   post.title = req.body.title;
-  post.author = req.body.author;
+  if (post.author == null) {
+    post.author = req.user._id;
+  }
   let result = await post.save();
   res.send(result);
 })
@@ -117,8 +161,11 @@ router.post('/setPost', async (req, res) => {
 router.get('/new-post-id/:hub', async (req, res) => {
   console.log("path new post id ")
   const { hub } = req.params;
-  const newPost = new Post({ title: ' ', text: ' ' })
+  const newPost = new Post({ title: ' ', text: ' ', author: req.user._id })
   const selectedHub = await Hub.findOne({ name: hub })
+  if (!selectedHub) {
+    return res.status(404).json({ message: 'Hub not found' })
+  }
   newPost.hub = selectedHub._id
   console.log("save post")
   let result = await newPost.save()
@@ -127,11 +174,14 @@ router.get('/new-post-id/:hub', async (req, res) => {
   res.send(JSON.stringify(result._id.toString()))
 })
 
-//Create Post
+//Create Post — author always comes from the JWT, not the body
 router.post('/:hub', async (req, res) => {
   const { hub } = req.params;
-  const newPost = new Post(req.body)
+  const newPost = new Post({ title: req.body.title, text: req.body.text, comments: [], author: req.user._id })
   const selectedHub = await Hub.findOne({ name: hub })
+  if (!selectedHub) {
+    return res.status(404).json({ message: 'Hub not found' })
+  }
   newPost.hub = selectedHub._id
   let result = await newPost.save()
   selectedHub.posts.unshift(newPost._id)
@@ -146,24 +196,21 @@ router.get('/myPosts', async (req, res) => {
   res.send(JSON.stringify(posts.reverse()))
 })
 
-//Delete Post TODO: NOT FINISHED
+//Delete Post — its author or a moderator; removes the hub ref, images and comments
 router.delete('/:hub/:postId', async (req, res) => {
-  const postId = req.params.postId;
-  const hub = req.params.hub;
-  await Hub.updateOne({ name: hub }, {
-    $pullAll: {
-      posts: [{ _id: postId }]
-    }
-  })
-  let post = await Post.findOne({ _id: postId })
-  for (let i = 0; i < post.images.length; i++) {
-    let image_filename = post.images[i]
-    fs.unlink(images_folder + image_filename, (err) => {
-      if (err) throw err;
-      console.log('path/file.txt was deleted');
-    })
+  const post = await Post.findById(req.params.postId)
+  if (!post) {
+    return res.status(404).json({ message: 'Post not found' })
   }
-  await Post.deleteOne({ _id: postId })
+  if (!isAuthor(post, req.user) && !canModerate(req.user)) {
+    return res.status(403).json({ message: 'Not allowed to delete this post' })
+  }
+  await Hub.updateOne({ name: req.params.hub }, { $pull: { posts: post._id } })
+  for (const image_filename of post.images) {
+    fs.unlink(images_folder + image_filename, () => {})
+  }
+  await Comment.deleteMany({ _id: { $in: post.comments } })
+  await Post.deleteOne({ _id: post._id })
   res.send("ok")
 })
 

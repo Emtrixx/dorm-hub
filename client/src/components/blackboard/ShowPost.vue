@@ -6,7 +6,7 @@
         <post-editor
           :hubId="id"
           :current_post="post"
-          v-if="post.author._id == currentUserId"
+          v-if="canEditPost"
         ></post-editor>
         <h1>{{ post.title }}</h1>
         <p>
@@ -27,9 +27,10 @@
         </div>
       </base-card>
       <hr />
-      <comment-form @save-data="createComment"></comment-form>
+      <comment-form v-if="isAuthenticated" @save-data="createComment"></comment-form>
+      <p v-else>Log in to leave a comment.</p>
       <div v-if="post.comments">
-        <base-card v-for="comment in post.comments" :key="comment.id">
+        <base-card v-for="comment in post.comments" :key="comment._id">
           <p>{{ comment.text }}</p>
           <p>
             by
@@ -38,6 +39,13 @@
               {{ comment.author.lastName }}</strong
             >
           </p>
+          <button
+            v-if="canDeleteComment(comment)"
+            class="btn btn-sm btn-outline-danger"
+            @click="deleteComment(comment)"
+          >
+            <i class="bi bi-trash"></i>
+          </button>
         </base-card>
       </div>
     </div>
@@ -66,6 +74,17 @@ export default {
     currentUserId() {
       return useAuthStore().userId;
     },
+    isAuthenticated() {
+      return useAuthStore().isAuthenticated;
+    },
+    // 'hubs' role users moderate the blackboard (matches server enforcement)
+    canEditPost() {
+      const auth = useAuthStore();
+      return (
+        (this.post.author && this.post.author._id === auth.userId) ||
+        auth.hasRole("hubs")
+      );
+    },
     url() {
       return BASE_URL;
     },
@@ -78,9 +97,22 @@ export default {
       await useBlackboardStore().fetchPost(this.id, this.postId);
       this.loading = false;
     },
+    canDeleteComment(comment) {
+      const auth = useAuthStore();
+      return (
+        comment.author &&
+        (comment.author._id === auth.userId || auth.hasRole("hubs"))
+      );
+    },
     async createComment(data) {
       await api.post(`blackboard/secure/${this.id}/${this.postId}`, data, { auth: true });
       this.fetchPost();
+    },
+    async deleteComment(comment) {
+      if (confirm("Delete this comment?")) {
+        await api.delete(`blackboard/secure/comments/${comment._id}`, undefined, { auth: true });
+        this.fetchPost();
+      }
     },
   },
 };

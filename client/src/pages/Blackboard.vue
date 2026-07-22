@@ -17,11 +17,22 @@
                 <button v-if="canManageHubs && !addingHub" class="btn" @click="addingHub = true">
                     <i class="bi bi-plus-lg"></i> Add hub
                 </button>
+                <button v-if="canManageHubs" class="btn" @click="managingHubs = !managingHubs">
+                    <i class="bi bi-gear"></i> {{ managingHubs ? 'Done' : 'Manage' }}
+                </button>
             </div>
             <div v-if="addingHub" class="input-group my-2" style="max-width: 24rem">
                 <input type="text" class="form-control" placeholder="Hub name" v-model="newHubName" @keyup.enter="createHub" />
                 <button class="btn btn-primary" @click="createHub">Create</button>
                 <button class="btn btn-outline-primary" @click="addingHub = false">Dismiss</button>
+            </div>
+            <div v-if="managingHubs" class="my-2">
+                <div v-for="hub in hubs" :key="hub._id" class="d-flex align-items-center gap-2 mb-1">
+                    <button class="btn btn-sm btn-outline-danger" @click="deleteHub(hub)">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                    <span>{{ hubLabel(hub.name) }} ({{ hub.posts.length }} posts)</span>
+                </div>
             </div>
         </div>
         <router-view class=""></router-view>
@@ -44,6 +55,7 @@ export default {
     return {
       hubs: [],
       addingHub: false,
+      managingHubs: false,
       newHubName: ''
     }
   },
@@ -76,6 +88,19 @@ export default {
       }
       this.addingHub = false
       this.newHubName = ''
+      this.fetchHubs()
+    },
+    async deleteHub(hub) {
+      if (!confirm(`Delete hub "${this.hubLabel(hub.name)}" and all its posts?`)) return
+      try {
+        await api.delete('blackboard/secure/hubs/' + hub.name, undefined, { auth: true })
+      } catch (error) {
+        alert(error.message)
+        return
+      }
+      if (this.$route.path.startsWith('/blackboard/' + hub.name)) {
+        this.$router.push('/blackboard/all')
+      }
       this.fetchHubs()
     }
   },

@@ -24,14 +24,9 @@
         <a class="" href="#" @click="$parent.editingArticle = false">
           {{ article.title }}
         </a>
-        <div v-if="($parent.editing && category.modifiable) && article.author._id === userId()">
+        <div v-if="$parent.editing && category.modifiable">
           <a href="#" @click="removeArticle(article)"><i class="bi bi-trash"></i></a>
           <a href="#" @click="openArticleEditor(articleIdx)"><i class="bi bi-pen"></i></a>
-        </div>
-        <div v-else>
-          <div v-if="$parent.editing && article.author._id !== userId()">editable by {{ article.author.firstName + " " +
-              article.author.lastName
-          }}</div>
         </div>
       </li>
       <li v-if="$parent.editing && category.modifiable" class="list-group-item">
@@ -43,7 +38,6 @@
 
 <script>
 import { api } from "@/api.js";
-import { useAuthStore } from "@/stores/auth.js";
 
 export default {
   props: { thisCategory: { type: Object } },
@@ -59,23 +53,20 @@ export default {
     },
   },
   methods: {
-    userId() {
-      return useAuthStore().userId
-    },
     openCategoryEditor(categoryName) {
       this.renamingCategory = true;
       this.editingCategoryName = categoryName;
     },
     async renameCategory(categoryName, categoryId) {
       this.renamingCategory = false;
-      await api.post("wiki/renameCategory", { newName: categoryName, categoryId: categoryId });
+      await api.post("wiki/secure/renameCategory", { newName: categoryName, categoryId: categoryId }, { auth: true });
       this.category.name = categoryName;
       this.$emit("updatedwikidata");
     },
     async removeCategory(category) {
       if (confirm("Do you want to delete " + category + "?")) {
         try {
-          await api.post("wiki/removeCategory", { name: category });
+          await api.post("wiki/secure/removeCategory", { name: category }, { auth: true });
         } catch {
           alert("Could not delete category " + category + ".");
         }
@@ -86,7 +77,7 @@ export default {
     },
     async removeArticle(article) {
       if (confirm("Do you want to delete " + article.title + "?")) {
-        await api.post("wiki/removeArticle", { articleId: article._id });
+        await api.post("wiki/secure/removeArticle", { articleId: article._id }, { auth: true });
         this.category.articles = this.category.articles.filter(
           (wikiArticle) => wikiArticle._id !== article._id
         );
@@ -96,7 +87,6 @@ export default {
     openArticleEditor(articleIdx) {
       this.$parent.editingArticle = true;
       this.$parent.selectedArticle = this.category.articles[articleIdx];
-      this.$parent.selectedArticle.author = this.userId();
       this.$parent.selectedArticleIndex.categoryId = this.category._id;
       this.$parent.selectedArticleIndex.articleIdx = articleIdx;
     },
@@ -104,8 +94,8 @@ export default {
       this.$parent.addingArticle = true;
       this.$parent.selectedArticleIndex.categoryId = this.category._id;
       this.$parent.selectedArticleIndex.articleIdx = this.category.articles.length;
+      // the server stamps the author from the JWT
       this.$parent.selectedArticle = { title: "", text: "" };
-      this.$parent.selectedArticle.author = this.userId();
     },
   },
 };

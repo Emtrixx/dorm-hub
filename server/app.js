@@ -47,7 +47,8 @@ app.use('/auth', authRoutes)
 app.use('/blackboard/secure', auth.requireJWT, blackboardSecureRoutes)
 app.use('/blackboard', blackboardRoutes)
 
-app.use('/news/secure', auth.requireJWT, auth.requireRole('news'), newsSecureRoutes)
+// News applies requireRole('news') per-route so logged-in users can comment
+app.use('/news/secure', auth.requireJWT, newsSecureRoutes)
 app.use('/news', newsRoutes)
 
 app.use('/wiki/secure', auth.requireJWT, auth.requireRole('wiki'), wikiSecureRoutes)

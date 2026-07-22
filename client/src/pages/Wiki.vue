@@ -92,7 +92,7 @@ export default {
       }
     },
     async addCategory(category) {
-      await api.post("wiki/addCategory", { name: category });
+      await api.post("wiki/secure/addCategory", { name: category }, { auth: true });
       this.addingCategory = false;
       this.fetchData();
     },

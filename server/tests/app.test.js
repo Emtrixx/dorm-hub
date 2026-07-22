@@ -9,6 +9,8 @@ import app from '../app.js'
 const User = mongoose.model('User')
 const Hub = mongoose.model('Hub')
 const Post = mongoose.model('Post')
+const Comment = mongoose.model('Comment')
+const News = mongoose.model('News')
 
 let mongod
 
@@ -194,3 +196,196 @@ describe('roles', () => {
     expect(JSON.parse(hubs.text).map(h => h.name)).not.toContain('gaming')
   })
 })
+
+describe('news authoring and comments', () => {
+  let plainToken
+  let editorToken
+  let newsId
+
+  async function login(email) {
+    const res = await request(app).post('/auth/login').send({ email, password: 'password123' })
+    expect(res.status).toBe(200)
+    return res.body.token
+  }
+
+  beforeAll(async () => {
+    // users were registered by the earlier describe blocks
+    plainToken = await login('test@example.com')
+    editorToken = await login('editor@example.com')
+
+    const create = await request(app)
+      .post('/news/secure')
+      .set('Authorization', `Bearer ${editorToken}`)
+      .send({ title: 'Draft', content: [{ contentType: 'text', content: 'v1' }] })
+    expect(create.status).toBe(200)
+    newsId = create.body._id
+  })
+
+  it('lets a news editor update a news item', async () => {
+    const res = await request(app)
+      .post(`/news/secure/${newsId}`)
+      .set('Authorization', `Bearer ${editorToken}`)
+      .send({ title: 'Updated', content: [{ contentType: 'text', content: 'v2' }, { contentType: 'img', content: 'http://example.com/a.jpg' }] })
+    expect(res.status).toBe(200)
+    expect(res.body.title).toBe('Updated')
+    expect(res.body.content).toHaveLength(2)
+  })
+
+  it('rejects updates without the news role', async () => {
+    const res = await request(app)
+      .post(`/news/secure/${newsId}`)
+      .set('Authorization', `Bearer ${plainToken}`)
+      .send({ title: 'Hijacked', content: [] })
+    expect(res.status).toBe(403)
+  })
+
+  it('lets any logged-in user comment, stamping the author from the JWT', async () => {
+    const res = await request(app)
+      .post(`/news/secure/${newsId}/comments`)
+      .set('Authorization', `Bearer ${plainToken}`)
+      .send({ text: 'Nice one', author: 'spoofed' })
+    expect(res.status).toBe(200)
+    const plainUser = await User.findOne({ email: 'test@example.com' })
+    expect(res.body.author).toBe(plainUser._id.toString())
+  })
+
+  it('rejects comments without a token', async () => {
+    const res = await request(app)
+      .post(`/news/secure/${newsId}/comments`)
+      .send({ text: 'anon' })
+    expect(res.status).toBe(401)
+  })
+
+  it('only lets the author or a news editor delete a comment', async () => {
+    const editorComment = await request(app)
+      .post(`/news/secure/${newsId}/comments`)
+      .set('Authorization', `Bearer ${editorToken}`)
+      .send({ text: 'editorial note' })
+    expect(editorComment.status).toBe(200)
+
+    const forbidden = await request(app)
+      .delete(`/news/secure/comments/${editorComment.body._id}`)
+      .set('Authorization', `Bearer ${plainToken}`)
+    expect(forbidden.status).toBe(403)
+
+    const allowed = await request(app)
+      .delete(`/news/secure/comments/${editorComment.body._id}`)
+      .set('Authorization', `Bearer ${editorToken}`)
+    expect(allowed.status).toBe(200)
+
+    const news = await News.findById(newsId)
+    expect(news.comments.map(String)).not.toContain(editorComment.body._id)
+  })
+
+  it('deleting a news item also deletes its comments', async () => {
+    const news = await News.findById(newsId)
+    const commentIds = news.comments
+
+    const res = await request(app)
+      .delete(`/news/secure/${newsId}`)
+      .set('Authorization', `Bearer ${editorToken}`)
+    expect(res.status).toBe(200)
+    expect(await News.findById(newsId)).toBeNull()
+    expect(await Comment.countDocuments({ _id: { $in: commentIds } })).toBe(0)
+  })
+})
+
+describe('blackboard post and comment permissions', () => {
+  let authorToken
+  let strangerToken
+  let moderatorToken
+  let postId
+
+  async function login(email) {
+    const res = await request(app).post('/auth/login').send({ email, password: 'password123' })
+    expect(res.status).toBe(200)
+    return res.body.token
+  }
+
+  beforeAll(async () => {
+    authorToken = await login('test@example.com')
+    moderatorToken = await login('editor@example.com')
+
+    const stranger = new User({ email: 'stranger@example.com', firstName: 'Stran', lastName: 'Ger' })
+    await User.register(stranger, 'password123')
+    strangerToken = await login('stranger@example.com')
+
+    await new Hub({ name: 'permtest' }).save()
+    const res = await request(app)
+      .get('/blackboard/secure/new-post-id/permtest')
+      .set('Authorization', `Bearer ${authorToken}`)
+    expect(res.status).toBe(200)
+    postId = JSON.parse(res.text)
+  })
+
+  it('stamps the author of new posts from the JWT', async () => {
+    const author = await User.findOne({ email: 'test@example.com' })
+    const post = await Post.findById(postId)
+    expect(post.author.toString()).toBe(author._id.toString())
+  })
+
+  it('lets the author edit their post but rejects others', async () => {
+    const edit = await request(app)
+      .post('/blackboard/secure/setPost')
+      .set('Authorization', `Bearer ${authorToken}`)
+      .send({ _id: postId, title: 'Mine', text: 'my text' })
+    expect(edit.status).toBe(200)
+
+    const forbidden = await request(app)
+      .post('/blackboard/secure/setPost')
+      .set('Authorization', `Bearer ${strangerToken}`)
+      .send({ _id: postId, title: 'Not yours', text: 'nope' })
+    expect(forbidden.status).toBe(403)
+
+    const moderated = await request(app)
+      .post('/blackboard/secure/setPost')
+      .set('Authorization', `Bearer ${moderatorToken}`)
+      .send({ _id: postId, title: 'Moderated', text: 'cleaned up' })
+    expect(moderated.status).toBe(200)
+  })
+
+  it('lets author or moderator delete comments, but not others', async () => {
+    const comment = await request(app)
+      .post(`/blackboard/secure/permtest/${postId}`)
+      .set('Authorization', `Bearer ${authorToken}`)
+      .send({ text: 'my comment', author: 'spoofed' })
+    expect(comment.status).toBe(200)
+
+    const forbidden = await request(app)
+      .delete(`/blackboard/secure/comments/${comment.body._id}`)
+      .set('Authorization', `Bearer ${strangerToken}`)
+    expect(forbidden.status).toBe(403)
+
+    const allowed = await request(app)
+      .delete(`/blackboard/secure/comments/${comment.body._id}`)
+      .set('Authorization', `Bearer ${authorToken}`)
+    expect(allowed.status).toBe(200)
+
+    const post = await Post.findById(postId)
+    expect(post.comments.map(String)).not.toContain(comment.body._id)
+  })
+
+  it('rejects post deletion by non-authors and completes it for the author', async () => {
+    const comment = await request(app)
+      .post(`/blackboard/secure/permtest/${postId}`)
+      .set('Authorization', `Bearer ${strangerToken}`)
+      .send({ text: 'left behind?' })
+    expect(comment.status).toBe(200)
+
+    const forbidden = await request(app)
+      .delete(`/blackboard/secure/permtest/${postId}`)
+      .set('Authorization', `Bearer ${strangerToken}`)
+    expect(forbidden.status).toBe(403)
+
+    const allowed = await request(app)
+      .delete(`/blackboard/secure/permtest/${postId}`)
+      .set('Authorization', `Bearer ${authorToken}`)
+    expect(allowed.status).toBe(200)
+
+    expect(await Post.findById(postId)).toBeNull()
+    expect(await Comment.findById(comment.body._id)).toBeNull()
+    const hub = await Hub.findOne({ name: 'permtest' })
+    expect(hub.posts.map(String)).not.toContain(postId)
+  })
+})
+
