@@ -43,6 +43,7 @@ const router = createRouter({
         { path: '/calendar', component: Calendar },
         { path: '/login', component: () => import('./pages/auth/Login.vue') },
         { path: '/signup', component: () => import('./pages/auth/Signup.vue') },
+        { path: '/admin', component: () => import('./pages/Admin.vue') },
         { path: '/impressum', component: Impressum },
         { path: '/privacy', component: Privacy },
         { path: '/:notFound(.*)', component: NotFound }

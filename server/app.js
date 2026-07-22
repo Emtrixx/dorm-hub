@@ -35,6 +35,8 @@ const newsSecureRoutes = require('./routes/news/secure');
 const wikiRoutes = require('./routes/wiki/index')
 const wikiSecureRoutes = require('./routes/wiki/secure')
 
+const adminSecureRoutes = require('./routes/admin/secure')
+
 // Routing
 // Each domain mounts its JWT-protected router on /<domain>/secure and its
 // public router on /<domain>. Secure routers must be mounted first: the public
@@ -53,6 +55,8 @@ app.use('/news', newsRoutes)
 
 app.use('/wiki/secure', auth.requireJWT, auth.requireRole('wiki'), wikiSecureRoutes)
 app.use('/wiki', wikiRoutes)
+
+app.use('/admin/secure', auth.requireJWT, auth.requireRole('admin'), adminSecureRoutes)
 
 //error handler. Sends error as json
 app.use(function(err, req, res, next) {

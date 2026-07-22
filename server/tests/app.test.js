@@ -389,3 +389,99 @@ describe('blackboard post and comment permissions', () => {
   })
 })
 
+describe('admin role management', () => {
+  let adminToken
+  let editorToken
+  let adminId
+  let plainUserId
+
+  async function login(email) {
+    const res = await request(app).post('/auth/login').send({ email, password: 'password123' })
+    expect(res.status).toBe(200)
+    return res.body.token
+  }
+
+  beforeAll(async () => {
+    const admin = new User({
+      email: 'admin@example.com',
+      firstName: 'Ada',
+      lastName: 'Min',
+      roles: ['admin']
+    })
+    await User.register(admin, 'password123')
+    adminId = admin._id.toString()
+    adminToken = await login('admin@example.com')
+    editorToken = await login('editor@example.com')
+    plainUserId = (await User.findOne({ email: 'test@example.com' }))._id.toString()
+  })
+
+  it('rejects non-admins, even domain editors', async () => {
+    const res = await request(app)
+      .get('/admin/secure/users')
+      .set('Authorization', `Bearer ${editorToken}`)
+    expect(res.status).toBe(403)
+  })
+
+  it('lists users without exposing password hashes', async () => {
+    const res = await request(app)
+      .get('/admin/secure/users')
+      .set('Authorization', `Bearer ${adminToken}`)
+    expect(res.status).toBe(200)
+    const emails = res.body.map(u => u.email)
+    expect(emails).toContain('test@example.com')
+    expect(emails).toContain('admin@example.com')
+    expect(res.body[0].hash).toBeUndefined()
+    expect(res.body[0].salt).toBeUndefined()
+  })
+
+  it('sets a user roles and they apply immediately', async () => {
+    const res = await request(app)
+      .post(`/admin/secure/users/${plainUserId}/roles`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ roles: ['wiki'] })
+    expect(res.status).toBe(200)
+    expect(res.body.roles).toEqual(['wiki'])
+
+    // the previously role-less user can now edit the wiki without re-login
+    const plainToken = await login('test@example.com')
+    const wikiEdit = await request(app)
+      .post('/wiki/secure/addCategory')
+      .set('Authorization', `Bearer ${plainToken}`)
+      .send({ name: 'Granted' })
+    expect(wikiEdit.status).toBe(200)
+
+    // revoke again
+    const revoke = await request(app)
+      .post(`/admin/secure/users/${plainUserId}/roles`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ roles: [] })
+    expect(revoke.status).toBe(200)
+    const wikiEditAfter = await request(app)
+      .post('/wiki/secure/addCategory')
+      .set('Authorization', `Bearer ${plainToken}`)
+      .send({ name: 'Denied' })
+    expect(wikiEditAfter.status).toBe(403)
+  })
+
+  it('rejects unknown roles', async () => {
+    const res = await request(app)
+      .post(`/admin/secure/users/${plainUserId}/roles`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ roles: ['superuser'] })
+    expect(res.status).toBe(400)
+  })
+
+  it('prevents an admin from revoking their own admin role', async () => {
+    const res = await request(app)
+      .post(`/admin/secure/users/${adminId}/roles`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ roles: ['news'] })
+    expect(res.status).toBe(400)
+
+    const keep = await request(app)
+      .post(`/admin/secure/users/${adminId}/roles`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ roles: ['admin', 'news'] })
+    expect(keep.status).toBe(200)
+  })
+})

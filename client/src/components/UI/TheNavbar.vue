@@ -13,6 +13,7 @@
           <li><router-link to="/wiki" active-class="dh-active" class="nav-link dh-nav-link">Wiki</router-link></li>
           <li><router-link to="/meet" active-class="dh-active" class="nav-link dh-nav-link">Meet</router-link></li>
           <li><router-link to="/calendar" active-class="dh-active" class="nav-link dh-nav-link">Calendar</router-link></li>
+          <li v-if="isAdmin"><router-link to="/admin" active-class="dh-active" class="nav-link dh-nav-link">Admin</router-link></li>
         </ul>
 
         <div class="text-end">
@@ -34,6 +35,9 @@ export default {
   computed: {
     isAuthenticated() {
       return useAuthStore().isAuthenticated
+    },
+    isAdmin() {
+      return useAuthStore().hasRole('admin')
     }
   },
   methods: {

@@ -6,8 +6,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 const mongoose = require('mongoose')
 const User = require('../models/user')
-
-const VALID_ROLES = ['admin', 'news', 'wiki', 'hubs']
+const { VALID_ROLES } = require('../utils/roles')
 
 const [email, rolesArg] = process.argv.slice(2)
 if (!email || !rolesArg) {

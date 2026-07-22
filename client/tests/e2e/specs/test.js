@@ -19,3 +19,20 @@ describe('login', () => {
     cy.contains('Log out')
   })
 })
+
+describe('admin', () => {
+  it('shows the role table to an admin', () => {
+    cy.visit('/')
+    cy.contains('Log in').click()
+    cy.get('#email').type('test@test.de')
+    cy.get('#password').type('test')
+    cy.get('button[type=submit]').click()
+    cy.contains('Log out')
+
+    cy.contains('a', 'Admin').click()
+    cy.contains('h1', 'User roles')
+    cy.contains('td', 'test@test.de')
+    // the seed admin's own admin checkbox is locked to prevent lockout
+    cy.get('input[type=checkbox][disabled]').should('exist')
+  })
+})
